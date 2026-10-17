@@ -1,0 +1,38 @@
+---
+interface Props { kb?: number; }
+const { kb = 50 } = Astro.props;
+const items = [
+  {
+    q: 'Is my photo uploaded anywhere?',
+    a: 'No. The compression runs in your browser using your own device. The photo never leaves it, and nothing is stored once you close the tab.',
+  },
+  {
+    q: 'Is 1 KB 1,000 bytes or 1,024 bytes?',
+    a: `Both are in use, and forms rarely say which. To be safe, the tool keeps the file under ${kb} × 1,000 bytes, which also passes if the site counts 1 KB as 1,024 bytes. For a minimum it does the opposite and uses 1,024.`,
+  },
+  {
+    q: 'Why does my photo look smaller in pixels afterwards?',
+    a: 'Lowering JPEG quality only goes so far before the picture turns blocky. Past that point the tool keeps quality at 60% or above and reduces the pixel size instead, which looks better at the same file size.',
+  },
+  {
+    q: 'What does padding to a minimum do?',
+    a: 'Some forms reject files that are too small. Padding adds a hidden comment block inside the JPEG to bring it up to the minimum. Image viewers ignore it, so the picture looks exactly the same.',
+  },
+  {
+    q: 'Can I use PNG or HEIC files?',
+    a: "You can start from JPG, PNG or WebP. The result is always a JPG, which most forms ask for. HEIC (iPhone photos) works only in browsers that can open it, such as Safari.",
+  },
+];
+---
+<div class="faq">
+  {items.map((i) => (
+    <details>
+      <summary>{i.q}</summary>
+      <p>{i.a}</p>
+    </details>
+  ))}
+</div>
+<script type="application/ld+json" set:html={JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: items.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
+})} />

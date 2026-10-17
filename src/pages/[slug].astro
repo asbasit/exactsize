@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Tool from '../components/Tool.astro';
+import Faq from '../components/Faq.astro';
+import data from '../data/sizes.json';
+
+export function getStaticPaths() {
+  return data.sizes.map((s) => ({ params: { slug: s.slug }, props: { size: s } }));
+}
+const { size } = Astro.props;
+const others = data.sizes.filter((s) => s.kb !== size.kb);
+---
+<Base
+  title={`Compress Image to ${size.kb} KB — Free, Stays on Your Device`}
+  description={`Compress a JPG, PNG or WebP photo to under ${size.kb} KB in your browser. Set a minimum too, or exact pixels. Nothing is uploaded.`}
+  path={`/${size.slug}/`}
+>
+  <div class="hero">
+    <h1>Compress an image to {size.kb} KB</h1>
+    <p class="lede">Pick a photo and get a JPG under {size.kb} KB, at the best quality that fits. If your form also has a minimum size or exact pixels, set those too.</p>
+  </div>
+
+  <Tool maxKB={size.kb} />
+
+  <div class="content">
+    <section class="prose">
+      <h2>What fits in {size.kb} KB</h2>
+      <p>{size.intro}</p>
+      <p>As a rough guide, a photo saved at {size.kb} KB is usually somewhere around <span class="num">{size.widthRange}</span> pixels wide. {data.pixelGuideNote}</p>
+    </section>
+
+    <section class="prose">
+      <h2>Getting a better result at {size.kb} KB</h2>
+      <ul>{size.tips.map((t) => <li>{t}</li>)}</ul>
+    </section>
+
+    <section class="prose">
+      <h2>How it works</h2>
+      <p>The tool saves your photo as a JPG at high quality and checks the size. If it's too big, it searches for the highest quality that still fits. If even 60% quality is too big, it shrinks the pixel size a step at a time and searches again, so you don't end up with a blocky picture.</p>
+    </section>
+
+    <section>
+      <h2>Questions</h2>
+      <Faq kb={size.kb} />
+    </section>
+
+    <section>
+      <h2>Other sizes</h2>
+      <nav class="size-links" aria-label="Other sizes">
+        {others.map((s) => <a href={`/${s.slug}/`} class="num">{s.kb} KB</a>)}
+        <a href="/">Any size</a>
+      </nav>
+    </section>
+  </div>
+</Base>

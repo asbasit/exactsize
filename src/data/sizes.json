@@ -1,0 +1,50 @@
+{
+  "lastVerified": "2026-10-17",
+  "pixelGuideNote": "Rough widths from our own tests: four sample photos saved as JPEG at quality 80. Busy, detailed photos need fewer pixels to fit; plain backgrounds fit more.",
+  "sizes": [
+    {
+      "kb": 20,
+      "slug": "compress-image-to-20kb",
+      "widthRange": "300–500",
+      "intro": "20 KB is a small file. It's enough for a clear face photo or a signature, not for a detailed landscape. Most forms that ask for 20 KB expect a small passport-style photo or a scanned signature.",
+      "tips": [
+        "Crop to the part that matters first. A tight crop of a face keeps more detail at 20 KB than a full-body shot.",
+        "A plain, light background compresses far better than a busy one.",
+        "If the form also gives pixel dimensions, enter them under Exact pixels so you get both right in one go."
+      ]
+    },
+    {
+      "kb": 50,
+      "slug": "compress-image-to-50kb",
+      "widthRange": "550–850",
+      "intro": "50 KB is a common upload limit for photos on application and exam forms. It's enough for a sharp head-and-shoulders photo, and usually fine for a scanned ID card if you crop the edges.",
+      "tips": [
+        "If the form says something like 20–50 KB, put 20 in Minimum and 50 in Maximum. The tool will keep the file inside that range.",
+        "Scanned documents do better as straight, well-lit photos. Shadows and paper texture take up space.",
+        "Phone photos are often 3–5 MB. Expect the tool to scale the picture down as well as compress it."
+      ]
+    },
+    {
+      "kb": 100,
+      "slug": "compress-image-to-100kb",
+      "widthRange": "850–1,350",
+      "intro": "At 100 KB most photos still look good on a screen. It's a common limit for profile pictures, document scans and email-friendly images.",
+      "tips": [
+        "For a document scan, 100 KB usually keeps small print readable if the page fills the frame.",
+        "If text looks soft, crop away margins rather than lowering the size further.",
+        "Screenshots with flat colours can look blotchy as JPEG. Try cropping to the area you need."
+      ]
+    },
+    {
+      "kb": 200,
+      "slug": "compress-image-to-200kb",
+      "widthRange": "1,400–2,000",
+      "intro": "200 KB is a roomy limit. Most photos fit at full screen size with little visible loss. It's common for job portals, rental applications and listing sites.",
+      "tips": [
+        "Many photos only need a little compression to get under 200 KB and keep their full width.",
+        "If your photo is already under 200 KB and is a JPEG, the tool tells you and you can keep the original.",
+        "For a multi-page document, compress each page photo separately, then upload them in order."
+      ]
+    }
+  ]
+}

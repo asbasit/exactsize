@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import Tool from '../components/Tool.astro';
+import Faq from '../components/Faq.astro';
+import data from '../data/sizes.json';
+---
+<Base
+  title="Compress an Image to an Exact File Size — ExactSize"
+  description="Get a photo under the KB limit a form asks for, at the best quality that fits. Set a minimum or exact pixels too. Runs in your browser; nothing is uploaded."
+  path="/"
+>
+  <div class="hero">
+    <h1>Compress an image to the size a form asks for</h1>
+    <p class="lede">Enter the KB limit, pick a photo, and download a JPG that fits. Works with a size range like 20–50 KB and exact pixels too. Your photo stays on your device.</p>
+  </div>
+
+  <Tool maxKB={50} />
+
+  <div class="content">
+    <section class="prose">
+      <h2>Why uploads get rejected</h2>
+      <p>Application, exam and ID forms usually check three things: the file size in KB, the pixel width and height, and the file type. A phone photo of 3 MB or more fails the first check straight away. Some forms also reject files that are too small.</p>
+      <p>This tool handles all three. It gives you a JPG inside your size limit, cropped to exact pixels if you need them, and can pad a file up to a minimum without changing the picture.</p>
+    </section>
+
+    <section>
+      <h2>Common sizes</h2>
+      <nav class="size-links" aria-label="Common sizes">
+        {data.sizes.map((s) => <a href={`/${s.slug}/`} class="num">Compress to {s.kb} KB</a>)}
+      </nav>
+    </section>
+
+    <section>
+      <h2>Questions</h2>
+      <Faq />
+    </section>
+  </div>
+</Base>

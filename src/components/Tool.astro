@@ -1,0 +1,336 @@
+---
+import sizes from '../data/sizes.json';
+interface Props { maxKB?: number; minKB?: number; }
+const { maxKB = 50, minKB } = Astro.props;
+---
+<section class="tool" aria-label="Image compressor" data-tool>
+  <div class="pane pane-file">
+    <label class="drop" data-drop>
+      <input class="sr" type="file" accept="image/*" data-file />
+      <span class="drop-empty" data-empty>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <span class="drop-title">Choose a photo</span>
+        <span class="drop-sub">or drop it here. JPG, PNG or WebP. It stays on your device.</span>
+      </span>
+      <img class="preview" data-preview alt="" hidden />
+    </label>
+    <p class="file-meta num" data-before hidden></p>
+  </div>
+
+  <div class="pane pane-set">
+    <fieldset class="fields">
+      <legend class="sr">Target size</legend>
+      <label class="field">
+        <span>Maximum</span>
+        <span class="input"><input class="num" type="number" inputmode="decimal" min="1" step="any" value={maxKB} data-max /><span>KB</span></span>
+      </label>
+      <label class="field">
+        <span>Minimum <em>optional</em></span>
+        <span class="input"><input class="num" type="number" inputmode="decimal" min="0" step="any" value={minKB ?? ''} placeholder="0" data-min /><span>KB</span></span>
+      </label>
+    </fieldset>
+
+    <div class="presets" role="group" aria-label="Common sizes">
+      {sizes.sizes.map((s) => <button type="button" class="chip num" data-preset={s.kb}>{s.kb} KB</button>)}
+    </div>
+
+    <details class="px" data-pxbox>
+      <summary>Exact pixels <em>optional</em></summary>
+      <div class="px-row">
+        <label class="field"><span>Width</span><span class="input"><input class="num" type="number" inputmode="numeric" min="16" step="1" placeholder="e.g. 600" data-w /><span>px</span></span></label>
+        <span class="times" aria-hidden="true">×</span>
+        <label class="field"><span>Height</span><span class="input"><input class="num" type="number" inputmode="numeric" min="16" step="1" placeholder="e.g. 600" data-h /><span>px</span></span></label>
+      </div>
+      <p class="hint">The photo is cropped from the centre to fit these exact pixels.</p>
+    </details>
+
+    <label class="check" data-padrow hidden>
+      <input type="checkbox" checked data-pad />
+      <span>If the result is under the minimum, pad the file up to it. The picture doesn't change.</span>
+    </label>
+
+    <div class="result" data-result aria-live="polite" hidden>
+      <div class="gauge" data-gauge aria-hidden="true">
+        <div class="band" data-band></div>
+        <div class="marker" data-marker></div>
+      </div>
+      <dl class="stats">
+        <div><dt>New size</dt><dd class="num" data-out-size>–</dd></div>
+        <div><dt>Pixels</dt><dd class="num" data-out-px>–</dd></div>
+        <div><dt>Quality</dt><dd class="num" data-out-q>–</dd></div>
+      </dl>
+      <p class="msg" data-msg></p>
+      <a class="btn" data-download href="#" download>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+        Download JPG
+      </a>
+    </div>
+    <p class="msg msg-error" data-error role="alert" hidden></p>
+    <noscript><p class="msg msg-error">This tool needs JavaScript to process your image in the browser.</p></noscript>
+  </div>
+</section>
+
+<style>
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .tool {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0;
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgb(28 26 22 / 0.06), 0 12px 32px -12px rgb(28 26 22 / 0.18);
+  }
+  @media (max-width: 820px) { .tool { grid-template-columns: 1fr; } }
+  .pane { padding: 24px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+  .pane-set { border-left: 1px solid var(--line); }
+  @media (max-width: 820px) { .pane-set { border-left: 0; border-top: 1px solid var(--line); } }
+
+  .drop {
+    position: relative; display: grid; place-items: center; min-height: 300px; cursor: pointer;
+    border: 1.5px dashed var(--line-strong); border-radius: 10px; background: var(--paper);
+    transition: border-color 160ms ease-out, background-color 160ms ease-out; overflow: hidden;
+  }
+  .drop:hover, .drop.is-over { border-color: var(--mark); }
+  .drop:focus-within { outline: 2px solid var(--mark); outline-offset: 3px; }
+  .drop-empty { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 24px; color: var(--ink-2); }
+  .drop-empty svg { color: var(--ink); margin-bottom: 4px; }
+  .drop-title { color: var(--ink); font-weight: 620; font-size: 1.15rem; }
+  .drop-sub { font-size: 15px; max-width: 30ch; }
+  .preview { width: 100%; height: 100%; max-height: 420px; object-fit: contain; }
+  .drop.has-file { border-style: solid; border-color: var(--line); }
+  .file-meta { font-size: 14px; color: var(--ink-2); }
+
+  .fields { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .field { display: grid; gap: 6px; font-size: 14px; font-weight: 560; min-width: 0; }
+  .field em, .px summary em { font-style: normal; font-weight: 400; color: var(--ink-2); }
+  .input { display: flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); padding-right: 12px; transition: border-color 140ms ease-out; }
+  .input:focus-within { border-color: var(--ink); }
+  .input input { flex: 1; width: 100%; min-width: 0; border: 0; background: transparent; color: var(--ink); font-size: 1.15rem; padding: 10px 12px; outline: none; }
+  .input span { color: var(--ink-2); font-size: 14px; }
+
+  .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 14px; cursor: pointer; transition: border-color 140ms ease-out, background-color 140ms ease-out; }
+  .chip:hover { border-color: var(--ink); }
+  .chip:active { transform: scale(0.97); }
+  .chip[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .px { border-top: 1px solid var(--line); padding-top: 12px; }
+  .px summary { cursor: pointer; font-size: 15px; font-weight: 560; }
+  .px-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 8px; margin-top: 12px; }
+  .times { padding-bottom: 12px; color: var(--ink-2); }
+  .hint { font-size: 14px; color: var(--ink-2); margin-top: 8px; }
+
+  .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--ink); }
+
+  .result { display: grid; gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .gauge { position: relative; height: 10px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
+  .band { position: absolute; top: 0; bottom: 0; background: var(--mark-soft); box-shadow: inset 0 0 0 1px var(--mark); border-radius: 999px; }
+  .marker {
+    position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+    background: var(--ink); box-shadow: 0 0 0 3px var(--surface), 0 2px 6px rgb(0 0 0 / 0.25);
+    left: 100%; transition: left 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-reduced-motion: reduce) { .marker { transition: none; } }
+  .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+  .stats dt { font-size: 13px; color: var(--ink-2); }
+  .stats dd { margin: 2px 0 0; font-size: 1.2rem; white-space: nowrap; }
+  @media (max-width: 480px) { .stats dd { font-size: 1rem; } .pane { padding: 18px; } .drop { min-height: 200px; } }
+  .msg { font-size: 15px; }
+  .msg.is-ok { color: var(--ok); }
+  .msg-error { color: var(--bad); background: var(--bad-soft); padding: 10px 12px; border-radius: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+    background: var(--ink); color: var(--paper); font-weight: 600; padding: 13px 20px; border-radius: 10px;
+    transition: transform 120ms ease-out, opacity 160ms ease-out;
+  }
+  .btn:hover { color: var(--paper); opacity: 0.9; }
+  .btn:active { transform: scale(0.98); }
+  .tool.is-busy .result { opacity: 0.55; }
+</style>
+
+<script>
+  import { targetBytes, fitToSize, padJpeg, coverCrop, formatKB } from '../lib/fit.js';
+
+  const root = document.querySelector('[data-tool]') as HTMLElement;
+  const $ = <T extends Element>(sel: string) => root.querySelector(sel) as T;
+  const fileInput = $<HTMLInputElement>('[data-file]');
+  const drop = $<HTMLElement>('[data-drop]');
+  const maxIn = $<HTMLInputElement>('[data-max]');
+  const minIn = $<HTMLInputElement>('[data-min]');
+  const wIn = $<HTMLInputElement>('[data-w]');
+  const hIn = $<HTMLInputElement>('[data-h]');
+  const padIn = $<HTMLInputElement>('[data-pad]');
+  const padRow = $<HTMLElement>('[data-padrow]');
+  const preview = $<HTMLImageElement>('[data-preview]');
+  const empty = $<HTMLElement>('[data-empty]');
+  const before = $<HTMLElement>('[data-before]');
+  const result = $<HTMLElement>('[data-result]');
+  const errorEl = $<HTMLElement>('[data-error]');
+  const msg = $<HTMLElement>('[data-msg]');
+  const dl = $<HTMLAnchorElement>('[data-download]');
+
+  const MAX_PIXELS = 16_000_000; // stay under mobile Safari's canvas limit
+  let file: File | null = null;
+  let source: { img: CanvasImageSource; w: number; h: number } | null = null;
+  let runId = 0;
+  let outUrl = '';
+
+  const bytesText = (b: number) => b >= 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${formatKB(b)} KB`;
+
+  function showError(text: string) {
+    errorEl.textContent = text; errorEl.hidden = false; result.hidden = true;
+  }
+
+  async function decode(f: File) {
+    try {
+      const bmp = await createImageBitmap(f, { imageOrientation: 'from-image' } as ImageBitmapOptions);
+      return { img: bmp as CanvasImageSource, w: bmp.width, h: bmp.height };
+    } catch {
+      const url = URL.createObjectURL(f);
+      const img = new Image(); img.src = url;
+      await img.decode();
+      return { img: img as CanvasImageSource, w: img.naturalWidth, h: img.naturalHeight };
+    }
+  }
+
+  // Draw in halving steps for big reductions; one big jump looks jagged.
+  function drawScaled(src: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, w: number, h: number) {
+    let cur: CanvasImageSource = src, cx = sx, cy = sy, cw = sw, ch = sh;
+    while (cw / 2 > w && ch / 2 > h) {
+      const c = document.createElement('canvas');
+      c.width = Math.round(cw / 2); c.height = Math.round(ch / 2);
+      const x = c.getContext('2d')!; x.imageSmoothingQuality = 'high';
+      x.drawImage(cur, cx, cy, cw, ch, 0, 0, c.width, c.height);
+      cur = c; cx = 0; cy = 0; cw = c.width; ch = c.height;
+    }
+    const out = document.createElement('canvas');
+    out.width = w; out.height = h;
+    const ctx = out.getContext('2d')!;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); // JPEG has no transparency
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(cur, cx, cy, cw, ch, 0, 0, w, h);
+    return out;
+  }
+
+  function makeEncoder(src: CanvasImageSource, crop: ReturnType<typeof coverCrop>, baseW: number, baseH: number) {
+    let lastScale = -1; let canvas: HTMLCanvasElement;
+    return async (q: number, s: number) => {
+      const w = Math.max(1, Math.round(baseW * s)), h = Math.max(1, Math.round(baseH * s));
+      if (s !== lastScale) { canvas = drawScaled(src, crop.sx, crop.sy, crop.sw, crop.sh, w, h); lastScale = s; }
+      const blob: Blob = await new Promise((res, rej) => canvas.toBlob((b) => b ? res(b) : rej(new Error('encode')), 'image/jpeg', q));
+      return { size: blob.size, data: { blob, w, h } };
+    };
+  }
+
+  function setGauge(min: number, max: number, size: number) {
+    const top = max * 1.25;
+    const band = $<HTMLElement>('[data-band]'), marker = $<HTMLElement>('[data-marker]');
+    band.style.left = `${(min / top) * 100}%`;
+    band.style.width = `${((max - min) / top) * 100}%`;
+    requestAnimationFrame(() => { marker.style.left = `${Math.min(100, (size / top) * 100)}%`; });
+  }
+
+  function syncPresets() {
+    root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => {
+      b.setAttribute('aria-pressed', String(Number(b.dataset.preset) === Number(maxIn.value)));
+    });
+    padRow.hidden = !(Number(minIn.value) > 0);
+  }
+
+  async function run() {
+    syncPresets();
+    errorEl.hidden = true;
+    if (!file || !source) return;
+    const id = ++runId;
+    let t: { min: number; max: number };
+    try { t = targetBytes(minIn.value, maxIn.value); } catch (e) { showError((e as Error).message); return; }
+
+    const fixedW = Number(wIn.value), fixedH = Number(hIn.value);
+    const fixed = fixedW >= 16 && fixedH >= 16;
+    if ((wIn.value || hIn.value) && !fixed) { showError('Enter both width and height (16 px or more), or leave both empty.'); return; }
+
+    root.classList.add('is-busy');
+    try {
+      let out: { blob: Blob; w: number; h: number; q: number | null; note: string };
+      if (!fixed && file.type === 'image/jpeg' && file.size <= t.max && file.size >= t.min) {
+        out = { blob: file, w: source.w, h: source.h, q: null, note: 'Your photo already fits. This is your original file, unchanged.' };
+      } else {
+        const crop = fixed ? coverCrop(source.w, source.h, fixedW, fixedH) : { sx: 0, sy: 0, sw: source.w, sh: source.h };
+        let baseW = fixed ? fixedW : source.w, baseH = fixed ? fixedH : source.h;
+        if (!fixed && baseW * baseH > MAX_PIXELS) { const k = Math.sqrt(MAX_PIXELS / (baseW * baseH)); baseW = Math.round(baseW * k); baseH = Math.round(baseH * k); }
+        const r = await fitToSize(makeEncoder(source.img, crop, baseW, baseH), { max: t.max, width: baseW, height: baseH, fixedPixels: fixed });
+        if (id !== runId) return;
+        if (!r.ok) {
+          showError(r.reason === 'fixed-too-big'
+            ? `At ${fixedW} × ${fixedH} px this photo can't get under ${maxIn.value} KB. Try smaller pixel dimensions or a simpler background.`
+            : `Couldn't get this photo under ${maxIn.value} KB. Try a larger limit.`);
+          return;
+        }
+        out = { blob: r.data.blob, w: r.data.w, h: r.data.h, q: r.quality, note: '' };
+        if (out.blob.size < t.min) {
+          if (padIn.checked) {
+            const bytes = padJpeg(new Uint8Array(await out.blob.arrayBuffer()), t.min);
+            out.blob = new Blob([bytes], { type: 'image/jpeg' });
+            out.note = `Padded up to the ${minIn.value} KB minimum. The picture is the same; the extra bytes are a hidden comment in the file.`;
+          } else {
+            out.note = `This is under your ${minIn.value} KB minimum even at top quality. Turn on padding above to reach it.`;
+          }
+        }
+      }
+      if (id !== runId) return;
+      const size = out.blob.size;
+      const inRange = size <= t.max && size >= t.min;
+      $<HTMLElement>('[data-out-size]').textContent = `${formatKB(size)} KB`;
+      $<HTMLElement>('[data-out-px]').textContent = `${out.w} × ${out.h}`;
+      $<HTMLElement>('[data-out-q]').textContent = out.q ? `${out.q}%` : 'original';
+      const safeBoth = size <= Number(maxIn.value) * 1000;
+      msg.textContent = out.note || (inRange
+        ? `Fits. ${size.toLocaleString()} bytes${safeBoth ? `, under ${maxIn.value} KB whether a site counts 1 KB as 1,000 or 1,024 bytes` : ''}.`
+        : '');
+      msg.classList.toggle('is-ok', inRange && !out.note);
+      if (outUrl) URL.revokeObjectURL(outUrl);
+      outUrl = URL.createObjectURL(out.blob);
+      dl.href = outUrl;
+      const base = file.name.replace(/\.[^.]+$/, '') || 'image';
+      dl.download = `${base}-${maxIn.value}kb.jpg`;
+      preview.src = outUrl;
+      result.hidden = false;
+      setGauge(t.min, t.max, size);
+    } catch (e) {
+      showError('Something went wrong while compressing. Try another photo or a different browser.');
+      console.error(e);
+    } finally {
+      if (id === runId) root.classList.remove('is-busy');
+    }
+  }
+
+  async function load(f: File) {
+    file = f; errorEl.hidden = true;
+    try {
+      source = await decode(f);
+    } catch {
+      file = null; source = null;
+      const heic = /heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name);
+      showError(heic
+        ? "This browser can't open HEIC photos. On iPhone, set Settings > Camera > Formats to Most Compatible, or try Safari."
+        : "This file couldn't be opened as an image. Try a JPG, PNG or WebP.");
+      return;
+    }
+    if (outUrl) URL.revokeObjectURL(outUrl);
+    outUrl = URL.createObjectURL(f); preview.src = outUrl;
+    empty.hidden = true; preview.hidden = false; drop.classList.add('has-file');
+    before.hidden = false;
+    before.textContent = `Original: ${bytesText(f.size)} · ${source.w} × ${source.h} px. Click the picture to pick another.`;
+    run();
+  }
+
+  let timer = 0;
+  const debounced = () => { clearTimeout(timer); timer = window.setTimeout(run, 350); };
+
+  fileInput.addEventListener('change', () => { const f = fileInput.files?.[0]; if (f) load(f); });
+  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove('is-over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); const f = (e as DragEvent).dataTransfer?.files?.[0]; if (f) load(f); });
+  [maxIn, minIn, wIn, hIn].forEach((el) => el.addEventListener('input', debounced));
+  padIn.addEventListener('change', run);
+  root.querySelectorAll<HTMLButtonElement>('[data-preset]').forEach((b) => b.addEventListener('click', () => { maxIn.value = b.dataset.preset!; run(); }));
+  syncPresets();
+</script>

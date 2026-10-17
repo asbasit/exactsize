@@ -1,0 +1,45 @@
+---
+import '../styles/global.css';
+import sizes from '../data/sizes.json';
+interface Props { title: string; description: string; path: string; }
+const { title, description, path } = Astro.props;
+const site = 'ExactSize';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#f6f4ef" />
+  </head>
+  <body>
+    <header class="site-head">
+      <div class="wrap">
+        <a class="brand" href="/">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 12h18"/><path d="M7 8v8M12 5v14M17 8v8"/></svg>
+          {site}
+        </a>
+        <nav class="site-nav" aria-label="Sizes">
+          {sizes.sizes.map((s) => (
+            <a href={`/${s.slug}/`} aria-current={path === `/${s.slug}/` ? 'page' : undefined}>{s.kb} KB</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main class="wrap">
+      <slot />
+    </main>
+    <footer class="site-foot">
+      <div class="wrap">
+        <span>{site}. Your images are processed on your device and never uploaded.</span>
+        <span>Last checked {sizes.lastVerified}</span>
+      </div>
+    </footer>
+  </body>
+</html>
