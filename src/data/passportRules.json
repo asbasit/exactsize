@@ -1,0 +1,247 @@
+{
+  "_meta": {
+    "schemaVersion": 1,
+    "lastVerified": "2026-10-18",
+    "description": "Official passport-photo requirements organized by country and submission mode. Physical print and digital upload rules are intentionally separate.",
+    "disclaimer": "Preflight data only. It cannot determine whether an authority will accept a photo. Re-verify official sources before use and before each rules update.",
+    "ruleStatuses": [
+      "specified",
+      "notSpecified",
+      "notApplicable",
+      "pathwayDependent"
+    ],
+    "measurementConventions": {
+      "aspectRatio": "width:height",
+      "pixelDimensions": "widthPx and heightPx",
+      "fileSize": "Keep the source unit (KB or MB); do not silently convert until the authority's byte interpretation is confirmed.",
+      "faceHeightPercent": "Percentage of total image height, unless a rule says otherwise."
+    }
+  },
+  "sources": [
+    { "id": "us-paper", "title": "U.S. Department of State passport photo requirements", "url": "https://travel.state.gov/en/passports/apply/help/photos.html", "checkedOn": "2026-10-18" },
+    { "id": "us-online", "title": "U.S. Department of State digital photo upload requirements", "url": "https://travel.state.gov/en/passports/renew-replace/online/upload-digital-photo.html", "checkedOn": "2026-10-18" },
+    { "id": "us-eligibility", "title": "U.S. Department of State online passport renewal eligibility", "url": "https://travel.state.gov/en/passports/renew-replace/online.html", "checkedOn": "2026-10-18" },
+    { "id": "ca-paper-digital", "title": "Government of Canada passport photo requirements", "url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/photos.html", "checkedOn": "2026-10-18" },
+    { "id": "ca-online", "title": "Government of Canada online adult passport renewal photo rules", "url": "https://www.canada.ca/en/immigration-refugees-citizenship/services/canadian-passports/renew-adult-passport/submit-form-fees/renew-online.html", "checkedOn": "2026-10-18" },
+    { "id": "uk-general", "title": "GOV.UK passport photo requirements", "url": "https://www.gov.uk/photos-for-passports", "checkedOn": "2026-10-18" },
+    { "id": "uk-digital", "title": "HM Passport Office guidance for taking a digital passport photo", "url": "https://www.passport.service.gov.uk/photo/how-to-take-a-photo", "checkedOn": "2026-10-18" },
+    { "id": "uk-standards", "title": "HM Passport Office photographic standards", "url": "https://www.gov.uk/government/publications/photographic-standards/photo-standards-accessible", "checkedOn": "2026-10-18" },
+    { "id": "in-psk", "title": "Passport Seva steps for applications at Passport Seva Kendras", "url": "https://passportindia.gov.in/AppOnlineProject/pdf/Steps_to_Submit_an_Application_at_PSK.pdf", "checkedOn": "2026-10-18" },
+    { "id": "in-icao", "title": "Passport Seva ICAO-compliant photo guidelines", "url": "https://mportal.passportindia.gov.in/pdf/Guidelines_for_ICAO_Compliant_Photographs_for_Passport_Applications.pdf", "checkedOn": "2026-10-18" },
+    { "id": "in-mission", "title": "Passport Seva mission application guidance", "url": "https://mportal.passportindia.gov.in/mission/BeforeYouApply", "checkedOn": "2026-10-18" },
+    { "id": "au-general", "title": "Australian Passport Office photo requirements", "url": "https://www.passports.gov.au/help/passport-photos", "checkedOn": "2026-10-18" },
+    { "id": "au-camera", "title": "Australian Passport Office camera operator guidelines", "url": "https://www.passports.gov.au/sites/default/files/documents/2026-06/Camera%20operator%20guidelines_0.pdf", "checkedOn": "2026-10-18" },
+    { "id": "au-print", "title": "Australian Passport Office passport photo printing guidance", "url": "https://www.passports.gov.au/sites/default/files/documents/2026-06/Printing%20a%20passport%20photo.pdf", "checkedOn": "2026-10-18" },
+    { "id": "nz-digital", "title": "New Zealand Passports photo requirements", "url": "https://www.passports.govt.nz/passport-photos", "checkedOn": "2026-10-18" },
+    { "id": "nz-paper", "title": "New Zealand Passports paper application forms", "url": "https://www.passports.govt.nz/paper-application-forms", "checkedOn": "2026-10-18" },
+    { "id": "nz-checker", "title": "New Zealand Online Photo Checker terms", "url": "https://onlinephotochecker.passports.govt.nz/Home/TermsAndConditions", "checkedOn": "2026-10-18" }
+  ],
+  "countries": [
+    {
+      "code": "US",
+      "name": "United States",
+      "modes": [
+        {
+          "id": "paper-application",
+          "label": "Paper application",
+          "scope": "U.S. passport paper applications; not a visa-photo specification.",
+          "sourceIds": ["us-paper"],
+          "physicalPrint": {
+            "status": "specified",
+            "copies": 1,
+            "size": { "width": 51, "height": 51, "unit": "mm" },
+            "faceHeight": { "status": "specified", "min": 25, "max": 35, "unit": "mm", "landmarks": "chin-to-crown" },
+            "paper": "Photo-quality paper"
+          },
+          "digitalUpload": { "status": "notApplicable" },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        },
+        {
+          "id": "eligible-online-adult-renewal",
+          "label": "Eligible online adult renewal",
+          "scope": "Online renewal is eligibility-limited; do not apply these rules to all passport or visa pathways.",
+          "sourceIds": ["us-online", "us-eligibility"],
+          "physicalPrint": { "status": "notApplicable" },
+          "digitalUpload": {
+            "status": "specified",
+            "format": { "status": "specified", "values": ["jpg", "jpeg", "png", "heic", "heif"] },
+            "fileSize": { "status": "specified", "min": { "value": 54, "unit": "KB" }, "max": { "value": 10, "unit": "MB" } },
+            "dimensions": { "status": "notSpecified" },
+            "aspectRatio": { "status": "notSpecified" },
+            "faceHeightPercent": { "status": "notSpecified" },
+            "colourRequired": { "status": "specified", "value": true },
+            "photoAgeMaxMonths": { "status": "specified", "value": 6 }
+          },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        }
+      ]
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "modes": [
+        {
+          "id": "paper-application",
+          "label": "In-person or mail application",
+          "sourceIds": ["ca-paper-digital"],
+          "physicalPrint": {
+            "status": "specified",
+            "copies": 2,
+            "size": { "width": 50, "height": 70, "unit": "mm" },
+            "faceHeight": { "status": "specified", "min": 31, "max": 36, "unit": "mm", "landmarks": "chin-to-crown" },
+            "photoAgeMaxMonths": { "status": "specified", "value": 6 }
+          },
+          "digitalUpload": { "status": "notApplicable" },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        },
+        {
+          "id": "eligible-online-adult-renewal",
+          "label": "Eligible online adult renewal",
+          "scope": "Digital specifications are distinct from the paper-photo specifications.",
+          "sourceIds": ["ca-paper-digital", "ca-online"],
+          "physicalPrint": { "status": "notApplicable" },
+          "digitalUpload": {
+            "status": "specified",
+            "format": { "status": "specified", "values": ["jpg", "jpeg"] },
+            "fileSize": { "status": "specified", "min": { "value": 200, "unit": "KB" }, "max": { "value": 5, "unit": "MB" } },
+            "dimensions": { "status": "specified", "min": { "widthPx": 1200, "heightPx": 1800 }, "max": { "widthPx": 3000, "heightPx": 4500 } },
+            "aspectRatio": { "status": "specified", "width": 2, "height": 3, "orientation": "portrait", "note": "Width-to-height ratio is stored as 2:3 from the published portrait dimensions; the official page describes this as a 3:2 ratio with the camera in portrait mode." },
+            "faceHeightPercent": { "status": "specified", "min": 45, "max": 50, "reference": "imageHeight", "landmarks": "chin-to-crown" },
+            "photoAgeMaxMonths": { "status": "specified", "value": 6 }
+          },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true, "sourceOriginalRequired": true, "note": "The digital file must be saved directly from the camera-original file; editing or cropping is not allowed." }
+        }
+      ]
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "modes": [
+        {
+          "id": "paper-application",
+          "label": "Paper application",
+          "sourceIds": ["uk-general", "uk-standards"],
+          "physicalPrint": {
+            "status": "specified",
+            "copies": 2,
+            "size": { "width": 35, "height": 45, "unit": "mm" },
+            "faceHeight": { "status": "specified", "min": 29, "max": 34, "unit": "mm", "landmarks": "crown-to-chin" }
+          },
+          "digitalUpload": { "status": "notApplicable" },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        },
+        {
+          "id": "online-application",
+          "label": "Online application",
+          "sourceIds": ["uk-general", "uk-digital", "uk-standards"],
+          "physicalPrint": { "status": "notApplicable" },
+          "digitalUpload": {
+            "status": "specified",
+            "format": { "status": "notSpecified" },
+            "fileSize": { "status": "specified", "min": { "value": 50, "unit": "KB" }, "max": { "value": 10, "unit": "MB" } },
+            "dimensions": { "status": "specified", "min": { "widthPx": 600, "heightPx": 750 }, "max": { "status": "notSpecified" } },
+            "aspectRatio": { "status": "notSpecified" },
+            "faceHeightPercent": { "status": "notSpecified" },
+            "photoAgeMaxMonths": { "status": "specified", "value": 1 },
+            "cropping": { "status": "specified", "applicantShouldCrop": false, "note": "For self-taken digital photos, include the head, shoulders and upper body; the application process crops the image." }
+          },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        }
+      ]
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "modes": [
+        {
+          "id": "domestic-psk-ordinary-application",
+          "label": "Domestic ordinary application at PSK or Post Office PSK",
+          "scope": "The reviewed Passport Seva instructions say the centre captures the applicant's photo for this pathway.",
+          "sourceIds": ["in-psk"],
+          "capture": { "status": "specified", "method": "captured-at-service-centre" },
+          "physicalPrint": { "status": "notApplicable" },
+          "digitalUpload": { "status": "notApplicable" }
+        },
+        {
+          "id": "other-domestic-centre",
+          "label": "Other domestic application centre",
+          "scope": "Photo-submission requirements can vary by centre; check that centre's current instructions.",
+          "sourceIds": ["in-psk"],
+          "physicalPrint": { "status": "pathwayDependent" },
+          "digitalUpload": { "status": "pathwayDependent" }
+        },
+        {
+          "id": "overseas-icao-guidance",
+          "label": "Overseas mission pathway using ICAO-compliant photo guidance",
+          "scope": "The reviewed source does not establish one digital upload workflow for all missions. Confirm the specific mission's application steps.",
+          "sourceIds": ["in-icao", "in-mission"],
+          "physicalPrint": { "status": "pathwayDependent" },
+          "digitalUpload": {
+            "status": "pathwayDependent",
+            "format": { "status": "notSpecified" },
+            "fileSize": { "status": "notSpecified" },
+            "dimensions": { "status": "specified", "min": { "widthPx": 630, "heightPx": 810 }, "max": { "widthPx": 630, "heightPx": 810 }, "note": "The ICAO-compliant photo guideline gives 630 × 810 px; this does not establish a universal upload requirement." },
+            "aspectRatio": { "status": "specified", "width": 7, "height": 9, "orientation": "portrait", "derivedFromPixelDimensions": true },
+            "faceHeightPercent": { "status": "specified", "min": 80, "max": 85, "reference": "imageHeight" }
+          },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true }
+        }
+      ]
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "modes": [
+        {
+          "id": "passport-application-print-photos",
+          "label": "Passport application with printed photos",
+          "scope": "An online application does not imply a digital photo upload; the reviewed guidance requires printed photos.",
+          "sourceIds": ["au-general", "au-camera", "au-print"],
+          "physicalPrint": {
+            "status": "specified",
+            "copies": 2,
+            "size": { "width": { "min": 35, "max": 40 }, "height": { "min": 45, "max": 50 }, "unit": "mm" },
+            "faceHeight": { "status": "specified", "min": 32, "max": 36, "unit": "mm", "landmarks": "chin-to-crown" },
+            "paper": "Heavy-weight glossy photo paper; follow official production and printing requirements."
+          },
+          "digitalUpload": { "status": "notApplicable", "note": "No applicant digital-upload specification was found in the reviewed guidance for this pathway." }
+        }
+      ]
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "modes": [
+        {
+          "id": "online-application",
+          "label": "Online application",
+          "sourceIds": ["nz-digital", "nz-checker"],
+          "physicalPrint": { "status": "notApplicable" },
+          "digitalUpload": {
+            "status": "specified",
+            "format": { "status": "specified", "values": ["jpg", "jpeg"] },
+            "fileSize": { "status": "specified", "min": { "value": 250, "unit": "KB" }, "max": { "value": 5, "unit": "MB" } },
+            "dimensions": { "status": "specified", "min": { "widthPx": 900, "heightPx": 1200 }, "max": { "widthPx": 4500, "heightPx": 6000 } },
+            "aspectRatio": { "status": "specified", "width": 3, "height": 4, "orientation": "portrait" },
+            "faceHeightPercent": { "status": "notSpecified" },
+            "photoAgeMaxMonths": { "status": "specified", "value": 6, "note": "The official online guide says the photo must be less than six months old." },
+            "officialPhotoCheckerLink": { "label": "Use the online photo checker", "url": "https://onlinephotochecker.passports.govt.nz/Home/TermsAndConditions" }
+          },
+          "alterationPolicy": { "status": "specified", "originalUneditedRequired": true, "note": "The official guide says not to use filters or digitally alter the image." }
+        },
+        {
+          "id": "paper-application",
+          "label": "Paper application",
+          "sourceIds": ["nz-paper"],
+          "physicalPrint": {
+            "status": "specified",
+            "copies": 2,
+            "size": { "width": 35, "height": 45, "unit": "mm" },
+            "faceHeightPercent": { "status": "specified", "value": 80, "reference": "imageHeight", "note": "Paper-form requirements and associated witness or endorsement instructions vary by form." }
+          },
+          "digitalUpload": { "status": "notApplicable" }
+        }
+      ]
+    }
+  ]
+}

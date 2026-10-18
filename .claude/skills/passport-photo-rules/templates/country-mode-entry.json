@@ -1,0 +1,18 @@
+{
+  "code": "XX",
+  "name": "Replace with country name",
+  "modes": [
+    {
+      "id": "replace-with-pathway-id",
+      "label": "Replace with exact submission mode",
+      "scope": "State eligibility and pathway limits; remove if unnecessary.",
+      "sourceIds": ["replace-with-existing-source-id"],
+      "physicalPrint": {
+        "status": "notSpecified"
+      },
+      "digitalUpload": {
+        "status": "notSpecified"
+      }
+    }
+  ]
+}
