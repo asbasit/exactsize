@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+import PassportPhotoPreflight from '../../components/PassportPhotoPreflight.astro';
+---
+<Base
+  title="Passport Photo Requirements by Country — ExactSize"
+  description="Check passport photo guidance by country and application path. Review official sources and locally inspect published file metadata without changing or uploading the image."
+  path="/passport-photos/"
+>
+  <div class="hero">
+    <h1>Passport photo requirements vary by country</h1>
+    <p class="lede">Choose the country and application path. See the issuing authority’s guidance, then run a limited advisory check on file properties that the official source actually publishes.</p>
+  </div>
+
+  <PassportPhotoPreflight />
+
+  <section class="content prose">
+    <h2>What this preflight can’t verify</h2>
+    <p>A file check cannot confirm photo age, facial expression, lighting, background, capture conditions, paper quality, prior editing, applicant eligibility, or acceptance by a government system. Follow the linked official instructions and use the authority’s own checker where available.</p>
+    <p>This page does not create a passport-photo export. It does not crop, resize, recompress, retouch, or upload the selected image.</p>
+  </section>
+</Base>

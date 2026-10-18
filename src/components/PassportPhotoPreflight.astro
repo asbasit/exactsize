@@ -1,0 +1,376 @@
+---
+import rules from '../data/passportRules.json';
+
+const { countries, sources, _meta } = rules;
+
+function statusDescription(status) {
+  if (status === 'notApplicable') return 'Not applicable to this application path.';
+  if (status === 'notSpecified') return 'Not specified in the reviewed official source.';
+  if (status === 'pathwayDependent') return 'Pathway-dependent. Confirm the exact process with the issuing authority.';
+  if (status === 'specified') return 'Specified in the reviewed official source.';
+  return 'Not recorded.';
+}
+
+function printDimension(value) {
+  if (Number.isFinite(value)) return String(value);
+  if (value && Number.isFinite(value.min) && Number.isFinite(value.max)) return `${value.min}–${value.max}`;
+  return '';
+}
+
+function printSize(size) {
+  if (!size) return '';
+  const width = printDimension(size.width);
+  const height = printDimension(size.height);
+  return width && height ? `${width} × ${height} ${size.unit || ''}`.trim() : '';
+}
+
+function fileSizeRange(rule) {
+  if (!rule || rule.status !== 'specified') return statusDescription(rule?.status);
+  const bound = (item) => item && Number.isFinite(item.value) ? `${item.value} ${item.unit}` : '';
+  const min = bound(rule.min);
+  const max = bound(rule.max);
+  if (min && max) return `${min}–${max}`;
+  if (min) return `At least ${min}`;
+  if (max) return `Up to ${max}`;
+  return 'See the official source.';
+}
+
+function pixelRange(rule) {
+  if (!rule || rule.status !== 'specified') return statusDescription(rule?.status);
+  const describe = (item) => item && Number.isFinite(item.widthPx) && Number.isFinite(item.heightPx)
+    ? `${item.widthPx} × ${item.heightPx} px`
+    : '';
+  const min = describe(rule.min);
+  const max = rule.max?.status === 'notSpecified' ? '' : describe(rule.max);
+  if (min && max) return `${min} to ${max}`;
+  if (min) return `At least ${min}; no maximum is specified.`;
+  if (max) return `Up to ${max}; no minimum is specified.`;
+  return 'See the official source.';
+}
+
+function percentageRange(rule) {
+  if (!rule || rule.status !== 'specified') return statusDescription(rule?.status);
+  if (Number.isFinite(rule.value)) return `${rule.value}%`;
+  if (Number.isFinite(rule.min) && Number.isFinite(rule.max)) return `${rule.min}–${rule.max}%`;
+  return 'See the official source.';
+}
+
+function modeFacts(mode) {
+  const facts = [];
+  const print = mode.physicalPrint;
+  const digital = mode.digitalUpload;
+
+  facts.push(['Physical print', statusDescription(print?.status)]);
+  if (print?.status === 'specified') {
+    const size = printSize(print.size);
+    if (size) facts.push(['Print dimensions', size]);
+    if (Number.isFinite(print.copies)) facts.push(['Number of copies', String(print.copies)]);
+    if (print.faceHeight) {
+      const faceHeight = print.faceHeight.unit
+        ? `${print.faceHeight.min}–${print.faceHeight.max} ${print.faceHeight.unit}${print.faceHeight.landmarks ? ` (${print.faceHeight.landmarks})` : ''}`
+        : percentageRange(print.faceHeight);
+      facts.push(['Face height on print', faceHeight]);
+    }
+    if (print.faceHeightPercent) facts.push(['Face height on print', percentageRange(print.faceHeightPercent)]);
+    if (print.paper) facts.push(['Paper', print.paper]);
+  }
+
+  facts.push(['Digital upload', statusDescription(digital?.status)]);
+  if (digital?.note) facts.push(['Digital-upload note', digital.note]);
+  if (digital?.status === 'pathwayDependent') facts.push(['Digital guidance', 'The following published values are pathway-dependent and do not establish a universal upload rule.']);
+  if (digital?.status === 'specified' || digital?.status === 'pathwayDependent') {
+    const format = digital.format?.status === 'specified'
+      ? digital.format.values?.join(', ').toUpperCase()
+      : statusDescription(digital.format?.status);
+    facts.push(['File type', format || statusDescription(digital.format?.status)]);
+    facts.push(['File size', fileSizeRange(digital.fileSize)]);
+    facts.push(['Pixel dimensions', pixelRange(digital.dimensions)]);
+    const ratio = digital.aspectRatio;
+    facts.push(['Aspect ratio', ratio?.status === 'specified'
+      ? `${ratio.width}:${ratio.height}${ratio.orientation ? ` (${ratio.orientation})` : ''}`
+      : statusDescription(ratio?.status)]);
+    if (digital.faceHeightPercent) facts.push(['Face height in image', percentageRange(digital.faceHeightPercent)]);
+    if (digital.photoAgeMaxMonths?.status === 'specified') facts.push(['Photo age', `No older than ${digital.photoAgeMaxMonths.value} months${digital.photoAgeMaxMonths.note ? ` — ${digital.photoAgeMaxMonths.note}` : ''}`]);
+    if (digital.cropping?.note) facts.push(['Cropping', digital.cropping.note]);
+  }
+
+  if (mode.capture?.method === 'captured-at-service-centre') facts.push(['Photo capture', 'The reviewed instructions say the service centre captures the applicant’s photo.']);
+  if (mode.alterationPolicy?.originalUneditedRequired) {
+    facts.push(['Editing restriction', mode.alterationPolicy.note || 'The authority requires an original or unedited image. This preflight does not alter files and cannot determine whether an image was previously edited.']);
+  }
+  return facts;
+}
+---
+<section class="passport-tool" data-passport-tool aria-labelledby="passport-tool-title">
+  <div class="tool-intro">
+    <p class="eyebrow">Choose the exact application path</p>
+    <h2 id="passport-tool-title">Check a passport photo</h2>
+    <p>Requirements differ by country and process. This checks only selected file metadata in your browser; it never changes or uploads the photo.</p>
+  </div>
+
+  <div class="selectors">
+    <label class="field">
+      <span>Country</span>
+      <select data-country>
+        <option value="">Choose a country</option>
+        {countries.map((country) => <option value={country.code}>{country.name}</option>)}
+      </select>
+    </label>
+    <label class="field">
+      <span>Application or photo-submission path</span>
+      <select data-mode disabled>
+        <option value="">Choose a country first</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="preflight-panel" data-panel hidden>
+    <p class="mode-scope" data-scope></p>
+    <p class="mode-status" data-mode-status role="status"></p>
+    <a class="guide-link" data-guide href="#passport-rules">View this path’s official requirements below</a>
+
+    <div class="upload-panel" data-upload hidden>
+      <label class="file-picker">
+        <span>Select a photo file</span>
+        <input type="file" accept="image/*" data-file />
+      </label>
+      <p class="privacy-note">The file is read only in this browser. No preview, modified export, or upload is created. File-size requirements are shown in the source’s units; this checker does not grade them because their byte conversion convention is not recorded.</p>
+      <div class="file-report" data-report hidden aria-live="polite">
+        <h3 data-result-title></h3>
+        <p data-result-message></p>
+        <p class="file-meta num" data-file-meta></p>
+        <ul class="check-list" data-checks></ul>
+      </div>
+    </div>
+  </div>
+
+  <noscript><p class="noscript-note">JavaScript is needed for the local file preflight. All country and pathway requirements remain available below.</p></noscript>
+
+  <section class="rules-section" id="passport-rules" aria-labelledby="rules-title">
+    <div class="rules-heading">
+      <h2 id="rules-title">Country requirements and sources</h2>
+      <p>Rules below were checked on { _meta.lastVerified }. Follow the linked authority for the latest instructions.</p>
+    </div>
+    {countries.map((country) => (
+      <details class="country-rules">
+        <summary>{country.name} ({country.code})</summary>
+        <div class="country-modes">
+          {country.modes.map((mode) => (
+            <article class="mode-card" id={`mode-${country.code}-${mode.id}`}>
+              <h3>{mode.label}</h3>
+              {mode.scope && <p class="scope-note">{mode.scope}</p>}
+              <dl class="facts">
+                {modeFacts(mode).map(([label, value]) => (
+                  <div><dt>{label}</dt><dd>{value}</dd></div>
+                ))}
+              </dl>
+              <div class="sources">
+                <h4>Official sources</h4>
+                <ul>
+                  {mode.sourceIds.map((sourceId) => sources.find((source) => source.id === sourceId)).filter(Boolean).map((source) => (
+                    <li><a href={source.url} target="_blank" rel="noreferrer">{source.title}</a> <span>Checked {source.checkedOn}</span></li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+      </details>
+    ))}
+  </section>
+</section>
+
+<script>
+  import rules from '../data/passportRules.json';
+  import { inspectPassportFile } from '../lib/passportPreflight.js';
+
+  const root = document.querySelector('[data-passport-tool]') as HTMLElement | null;
+  if (root) {
+    const countrySelect = root.querySelector('[data-country]') as HTMLSelectElement;
+    const modeSelect = root.querySelector('[data-mode]') as HTMLSelectElement;
+    const panel = root.querySelector('[data-panel]') as HTMLElement;
+    const scope = root.querySelector('[data-scope]') as HTMLElement;
+    const modeStatus = root.querySelector('[data-mode-status]') as HTMLElement;
+    const guide = root.querySelector('[data-guide]') as HTMLAnchorElement;
+    const upload = root.querySelector('[data-upload]') as HTMLElement;
+    const fileInput = root.querySelector('[data-file]') as HTMLInputElement;
+    const report = root.querySelector('[data-report]') as HTMLElement;
+    const resultTitle = root.querySelector('[data-result-title]') as HTMLElement;
+    const resultMessage = root.querySelector('[data-result-message]') as HTMLElement;
+    const fileMeta = root.querySelector('[data-file-meta]') as HTMLElement;
+    const checkList = root.querySelector('[data-checks]') as HTMLUListElement;
+    let selectedMode: (typeof rules.countries)[number]['modes'][number] | undefined;
+    let inspectionId = 0;
+
+    const statusLabels: Record<string, string> = {
+      matchesListedChecks: 'Measured properties match the listed checks',
+      needsReview: 'Review one or more measured properties',
+      partial: 'Some properties still need manual review',
+      notApplicable: 'No digital file check applies to this path',
+      pathwayDependent: 'This path requires manual confirmation',
+      notSpecified: 'The digital-photo details are not specified',
+      notCheckable: 'This file cannot be checked here',
+    };
+    const checkLabels: Record<string, string> = {
+      format: 'File type', fileSize: 'File size', dimensions: 'Pixel dimensions', aspectRatio: 'Aspect ratio',
+    };
+
+    function clearReport() {
+      inspectionId++;
+      fileInput.value = '';
+      report.hidden = true;
+      checkList.replaceChildren();
+      fileMeta.textContent = '';
+    }
+
+    function setModeOptions() {
+      clearReport();
+      panel.hidden = true;
+      upload.hidden = true;
+      selectedMode = undefined;
+      modeSelect.replaceChildren(new Option('Choose a pathway', ''));
+      const country = rules.countries.find((item) => item.code === countrySelect.value);
+      if (!country) {
+        modeSelect.disabled = true;
+        return;
+      }
+      country.modes.forEach((mode) => modeSelect.add(new Option(mode.label, mode.id)));
+      modeSelect.disabled = false;
+    }
+
+    function selectMode() {
+      clearReport();
+      const country = rules.countries.find((item) => item.code === countrySelect.value);
+      selectedMode = country?.modes.find((item) => item.id === modeSelect.value);
+      panel.hidden = !selectedMode;
+      upload.hidden = true;
+      if (!selectedMode) return;
+
+      const digital = selectedMode.digitalUpload;
+      scope.textContent = selectedMode.scope || '';
+      guide.href = `#mode-${country?.code}-${selectedMode.id}`;
+      if (digital?.status === 'specified') {
+        modeStatus.textContent = 'This path has published digital requirements. The file check is limited to the listed file label, pixel bounds, and exact published ratio; file size remains manual.';
+        upload.hidden = false;
+      } else if (digital?.status === 'notApplicable') {
+        modeStatus.textContent = 'The reviewed guidance does not call for an applicant digital upload on this path. Use the print or capture instructions below.';
+      } else if (digital?.status === 'pathwayDependent') {
+        modeStatus.textContent = 'The required process depends on the exact centre or mission. No file check is run; confirm the current instructions with the issuing authority.';
+      } else {
+        modeStatus.textContent = 'The reviewed official sources do not define a digital upload for this path. No file check is run.';
+      }
+    }
+
+    async function readPixelDimensions(file: File) {
+      if ('createImageBitmap' in window) {
+        const bitmap = await createImageBitmap(file);
+        try {
+          return { widthPx: bitmap.width, heightPx: bitmap.height };
+        } finally {
+          bitmap.close();
+        }
+      }
+      const url = URL.createObjectURL(file);
+      try {
+        const image = new Image();
+        image.src = url;
+        await image.decode();
+        return { widthPx: image.naturalWidth, heightPx: image.naturalHeight };
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    function appendCheck(check: { field: string; status: string; message: string }) {
+      const item = document.createElement('li');
+      item.dataset.status = check.status;
+      const label = document.createElement('strong');
+      label.textContent = `${checkLabels[check.field] || check.field}: `;
+      const text = document.createElement('span');
+      text.textContent = check.message;
+      item.append(label, text);
+      checkList.append(item);
+    }
+
+    countrySelect.addEventListener('change', setModeOptions);
+    modeSelect.addEventListener('change', selectMode);
+    fileInput.addEventListener('change', async () => {
+      const file = fileInput.files?.[0];
+      const mode = selectedMode;
+      if (!file || !mode) return;
+      const currentInspection = ++inspectionId;
+      fileInput.value = '';
+      report.hidden = false;
+      resultTitle.textContent = 'Reading file metadata locally…';
+      resultMessage.textContent = '';
+      fileMeta.textContent = `${file.name} · ${file.size.toLocaleString()} bytes`;
+      checkList.replaceChildren();
+
+      let dimensions: { widthPx?: number; heightPx?: number } = {};
+      try {
+        dimensions = await readPixelDimensions(file);
+      } catch {
+        // Unsupported decoders leave dimensions unknown; they are never treated as a rejection.
+      }
+      if (currentInspection !== inspectionId) return;
+
+      const result = inspectPassportFile({
+        name: file.name,
+        type: file.type,
+        sizeBytes: file.size,
+        ...dimensions,
+      }, mode);
+      resultTitle.textContent = statusLabels[result.status] || 'Advisory result';
+      resultMessage.textContent = result.message;
+      result.checks.forEach(appendCheck);
+    });
+  }
+</script>
+
+<style>
+  .passport-tool { display: grid; gap: 24px; }
+  .tool-intro { display: grid; gap: 10px; max-width: 68ch; }
+  .eyebrow { color: var(--mark); font-size: 13px; font-weight: 650; letter-spacing: .08em; text-transform: uppercase; }
+  .passport-tool [hidden] { display: none !important; }
+  .selectors { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .field { display: grid; gap: 7px; font-weight: 600; }
+  .field select { min-width: 0; width: 100%; padding: 12px 14px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--surface); color: var(--ink); font: inherit; }
+  .field select:disabled { opacity: .62; }
+  .preflight-panel { display: grid; gap: 12px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  .mode-scope, .privacy-note, .noscript-note { color: var(--ink-2); }
+  .mode-status { font-weight: 600; }
+  .guide-link { justify-self: start; }
+  .upload-panel { display: grid; gap: 12px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .file-picker { display: grid; gap: 8px; justify-items: start; font-weight: 600; }
+  .file-picker input { max-width: 100%; font: inherit; }
+  .privacy-note { font-size: 14px; max-width: 75ch; }
+  .file-report { display: grid; gap: 10px; padding-top: 10px; }
+  .file-report h3 { font-size: 1.08rem; }
+  .file-meta { color: var(--ink-2); font-size: 14px; overflow-wrap: anywhere; }
+  .check-list { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; }
+  .check-list li[data-status='outside'] { color: var(--bad); }
+  .check-list li[data-status='matches'] { color: var(--ok); }
+  .check-list strong { color: var(--ink); }
+  .rules-section { display: grid; gap: 18px; padding-top: 28px; }
+  .rules-heading { display: grid; gap: 8px; }
+  .rules-heading p, .scope-note, .sources li span { color: var(--ink-2); }
+  .country-rules { border-top: 1px solid var(--line); }
+  .country-rules:last-child { border-bottom: 1px solid var(--line); }
+  .country-rules > summary { cursor: pointer; padding: 14px 2px; font-weight: 650; }
+  .country-modes { display: grid; gap: 12px; padding: 0 0 16px; }
+  .mode-card { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); scroll-margin-top: 20px; }
+  .scope-note { font-size: 15px; }
+  .facts { display: grid; gap: 8px; margin: 0; }
+  .facts > div { display: grid; grid-template-columns: minmax(130px, .38fr) minmax(0, 1fr); gap: 12px; }
+  .facts dt { color: var(--ink-2); }
+  .facts dd { margin: 0; overflow-wrap: anywhere; }
+  .sources { display: grid; gap: 6px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .sources h4 { margin: 0; font-size: 14px; }
+  .sources ul { margin: 0; padding-left: 1.2em; display: grid; gap: 5px; font-size: 14px; }
+  .sources li span { font-size: 12px; }
+  @media (max-width: 640px) {
+    .selectors { grid-template-columns: 1fr; }
+    .facts > div { grid-template-columns: 1fr; gap: 2px; }
+    .preflight-panel { padding: 16px; }
+  }
+</style>
