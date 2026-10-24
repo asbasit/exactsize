@@ -1,0 +1,85 @@
+---
+// One page per official form (IBPS, UPSC, SSC, US visa). Data and sources: src/data/formPresets.json.
+import Base from '../layouts/Base.astro';
+import Tool from '../components/Tool.astro';
+import data from '../data/formPresets.json';
+
+export function getStaticPaths() {
+  return data.pages.map((p) => ({ params: { form: p.slug }, props: { page: p } }));
+}
+const { page } = Astro.props;
+const others = data.pages.filter((p) => p.slug !== page.slug);
+const range = (min: number | null, max: number) => (min ? `${min}–${max} KB` : `under ${max} KB`);
+---
+<Base title={page.title} description={page.description} path={`/${page.slug}/`}>
+  <div class="hero">
+    <h1>{page.h1}</h1>
+    <p class="lede">{page.lede}</p>
+  </div>
+
+  <Tool forms={page.presets as any} />
+
+  <div class="content">
+    <section>
+      <h2>The official sizes</h2>
+      <div class="spec-wrap">
+        <table class="spec">
+          <thead><tr><th scope="col">Upload</th><th scope="col">Pixels</th><th scope="col">File size</th></tr></thead>
+          <tbody>
+            {page.presets.map((p) => (
+              <tr>
+                <th scope="row">{p.label}</th>
+                <td class="num">{p.pixelsText}</td>
+                <td class="num">{range(p.minKB, p.maxKB)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="source">
+        From <a href={page.sourceUrl} rel="nofollow noopener" target="_blank">{page.sourceTitle}</a>{page.sourceDate ? `, ${page.sourceDate}` : ''}.
+        All files are JPG. Checked against the source on <span class="num">{page.lastVerified}</span>. {page.exam}
+      </p>
+    </section>
+
+    <section class="prose">
+      <h2>Before you upload</h2>
+      <ul>{page.notes.map((n) => <li>{n}</li>)}</ul>
+    </section>
+
+    <section class="prose">
+      <h2>What the notice says</h2>
+      {page.presets.map((p) => (
+        <blockquote class="quote"><strong>{p.label}:</strong> “{p.quote}”</blockquote>
+      ))}
+      <p>Rules change between exam cycles. If your notice gives different numbers, type them into the fields above; the tool works with any size.</p>
+    </section>
+
+    <section class="prose">
+      <h2>How it works</h2>
+      <p>The tool crops or fits your scan to the pixel size, then saves a JPG at the highest quality that stays under the maximum. If the result is below the minimum, it adds a hidden comment inside the file to reach it, so the picture doesn't change. To be safe whether the form counts 1 KB as 1,000 or 1,024 bytes, it keeps under the maximum in both.</p>
+    </section>
+
+    <section>
+      <h2>Other forms</h2>
+      <nav class="size-links" aria-label="Other forms">
+        {others.map((p) => <a href={`/${p.slug}/`}>{p.name}</a>)}
+        <a href="/passport-photos/">Passport photos</a>
+        <a href="/resize-image/">Resize to any pixels</a>
+      </nav>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .spec-wrap { overflow-x: auto; max-width: 68ch; }
+  .spec { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .spec th, .spec td { text-align: left; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+  .spec td.num { font-size: 14px; }
+  .spec td:last-child { white-space: nowrap; }
+  .spec thead th { font-size: 13px; font-weight: 560; color: var(--ink-2); }
+  .spec tbody th { font-weight: 600; }
+  .source { font-size: 14px; color: var(--ink-2); max-width: 68ch; }
+  .quote { margin: 0; padding: 4px 0 4px 14px; border-left: 2px solid var(--line-strong); color: var(--ink-2); font-size: 15px; }
+  .quote strong { color: var(--ink); font-weight: 600; }
+</style>

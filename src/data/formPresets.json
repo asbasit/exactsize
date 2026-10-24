@@ -1,0 +1,184 @@
+{
+  "lastVerified": "2026-10-24",
+  "note": "Each preset is copied from the issuing body's own notice or portal. Re-check every source before each exam cycle; notices change yearly. 'quote' is the exact line the values come from.",
+  "pages": [
+    {
+      "slug": "ibps-photo-signature-size",
+      "name": "IBPS",
+      "title": "IBPS Photo and Signature Size — Resize to 200×230 and 140×60",
+      "description": "Make your IBPS photo (200×230 px, 20–50 KB), signature (140×60 px, 10–20 KB), thumb impression and declaration fit the 2026 notice. Runs in your browser.",
+      "h1": "IBPS photo, signature, thumb and declaration sizes",
+      "lede": "Pick what you're uploading, then choose your scan. You get a JPG at the pixel size and KB range from the 2026 IBPS notice. Nothing leaves your device.",
+      "exam": "IBPS CRP PO/MT-XVI (2026). The Clerk CSA-XVI notice uses the same values.",
+      "sourceUrl": "https://www.ibps.in/wp-content/uploads/Detailed-Notification_CRP-PO-XVI_Final_V1_30.06.2026.pdf",
+      "sourceTitle": "IBPS Detailed Notification CRP PO/MT-XVI, annexure 'Guidelines for scanning and upload of documents'",
+      "sourceDate": "2026-06-30",
+      "lastVerified": "2026-10-24",
+      "notes": [
+        "IBPS calls the pixel sizes 'preferred'. The KB ranges are the hard limits.",
+        "The form also takes a live photo with your webcam or phone. That one isn't an upload, so there's nothing to resize.",
+        "Sign the signature and declaration in black ink on white paper, not in capital letters. The declaration must be in your own handwriting, in English."
+      ],
+      "presets": [
+        {
+          "id": "ibps-photo",
+          "label": "Photo",
+          "pixelsText": "200 × 230 (preferred)",
+          "maxKB": 50,
+          "minKB": 20,
+          "width": 200,
+          "height": 230,
+          "fit": "cover",
+          "fileName": null,
+          "quote": "Dimensions 200 x 230 pixels (preferred). Size of file should be between 20kb–50 kb."
+        },
+        {
+          "id": "ibps-signature",
+          "label": "Signature",
+          "pixelsText": "140 × 60 (preferred)",
+          "maxKB": 20,
+          "minKB": 10,
+          "width": 140,
+          "height": 60,
+          "fit": "contain",
+          "fileName": null,
+          "quote": "Dimensions 140 x 60 pixels (preferred). Size of file should be between 10kb – 20kb."
+        },
+        {
+          "id": "ibps-left-thumb",
+          "label": "Left thumb",
+          "pixelsText": "240 × 240 (preferred)",
+          "maxKB": 50,
+          "minKB": 20,
+          "width": 240,
+          "height": 240,
+          "fit": "contain",
+          "fileName": null,
+          "quote": "File type: jpg / jpeg; Dimensions: 240 x 240 pixels in 200 DPI (Preferred for required quality) i.e 3 cm * 3 cm (Width * Height); File Size: 20 KB – 50 KB"
+        },
+        {
+          "id": "ibps-declaration",
+          "label": "Declaration",
+          "pixelsText": "800 × 400 (preferred)",
+          "maxKB": 100,
+          "minKB": 50,
+          "width": 800,
+          "height": 400,
+          "fit": "contain",
+          "fileName": null,
+          "quote": "File type: jpg / jpeg; Dimensions: 800 x 400 pixels in 200 DPI (Preferred for required quality) i.e. 10 cm * 5 cm (Width * Height); File Size: 50 KB – 100 KB"
+        }
+      ]
+    },
+    {
+      "slug": "upsc-photo-signature-size",
+      "name": "UPSC",
+      "title": "UPSC Photo and Signature Size — 20–200 KB Photo, 20–100 KB Signature",
+      "description": "Get your UPSC photo under 200 KB and your triple signature to 350–500 px and 20–100 KB, the limits the UPSC online form checks. Runs in your browser.",
+      "h1": "UPSC photo and signature size",
+      "lede": "The UPSC online form accepts a photo of 20–200 KB and a signature image of 20–100 KB, 350–500 pixels on each side. Pick one, choose your file, and download a JPG that passes.",
+      "exam": "UPSC Common Application Form (upsconline.nic.in), used for all UPSC exams.",
+      "sourceUrl": "https://upsconline.nic.in/caf/",
+      "sourceTitle": "UPSC Common Application Form, upload notes for photo and signature",
+      "sourceDate": "2026-10-23",
+      "lastVerified": "2026-10-24",
+      "notes": [
+        "The exam notices (for example ESE 2027) allow up to 300 KB, but the online form itself stops at 200 KB for the photo and 100 KB for the signature. These presets use the form's limits, which pass both.",
+        "UPSC doesn't give a pixel size for the photo. Your face must cover at least three quarters of it, so crop close before you start.",
+        "The signature image is three identical signatures in black ink on white unruled paper, one below the other. We fit it into 400 × 500 px with white margins; any size from 350 to 500 px on each side is allowed.",
+        "Name the files photo.jpg and signature.jpg. The download already uses those names.",
+        "The form also takes a live photo after the upload. That one isn't a file, so there's nothing to resize."
+      ],
+      "presets": [
+        {
+          "id": "upsc-photo",
+          "label": "Photo",
+          "pixelsText": "not given",
+          "maxKB": 200,
+          "minKB": 20,
+          "width": null,
+          "height": null,
+          "fit": "cover",
+          "fileName": "photo",
+          "quote": "Allowed Photo size: 20 KB to 200 KB, File format: jpg, jpeg | File name should be photo | Face must cover at least 75% or 3/4th of the area in the photo"
+        },
+        {
+          "id": "upsc-signature",
+          "label": "Signature",
+          "pixelsText": "350–500 each side",
+          "maxKB": 100,
+          "minKB": 20,
+          "width": 400,
+          "height": 500,
+          "fit": "contain",
+          "fileName": "signature",
+          "quote": "Allowed Signature size : 20 KB to 100 KB, File format: jpg, jpeg | The height and width of signature image must be between 350 and 500 pixels | Upload three identical signatures signed in black ink on white unruled paper in one vertical column."
+        }
+      ]
+    },
+    {
+      "slug": "ssc-signature-size",
+      "name": "SSC",
+      "title": "SSC Signature Size — Compress to 10–20 KB (CGL 2026)",
+      "description": "Get your SSC signature scan between 10 and 20 KB as a JPG, as the CGL 2026 notice asks. The SSC photo is taken live, so only the signature needs resizing.",
+      "h1": "SSC signature size: 10–20 KB",
+      "lede": "SSC wants the signature as a JPG between 10 and 20 KB, about 6 cm wide and 2 cm high. Choose your scan and download a file inside that range.",
+      "exam": "SSC Combined Graduate Level Examination 2026 notice (para 9.6).",
+      "sourceUrl": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/Notice_of_adv_cgl_2026.pdf",
+      "sourceTitle": "SSC Notice of Combined Graduate Level Examination, 2026",
+      "sourceDate": "2026-05-21",
+      "lastVerified": "2026-10-24",
+      "notes": [
+        "You don't upload a photo to SSC any more. The application takes it live with your camera, so make sure you're in good light against a plain background.",
+        "SSC gives the signature size in centimetres, not pixels, so there's no official pixel size. Crop the scan close to the signature first; a 3:1 shape matches 6 × 2 cm.",
+        "Blurred or tiny signatures get rejected. Sign larger than usual on white paper and scan or photograph it flat."
+      ],
+      "presets": [
+        {
+          "id": "ssc-signature",
+          "label": "Signature",
+          "pixelsText": "not given (about 6 × 2 cm)",
+          "maxKB": 20,
+          "minKB": 10,
+          "width": null,
+          "height": null,
+          "fit": "contain",
+          "fileName": null,
+          "quote": "Candidates are required to upload the scanned signature in JPEG/JPG format (10 to 20 KB). Image dimension of the signature should be about 6.0 cm (width) x 2.0 cm (height)."
+        }
+      ]
+    },
+    {
+      "slug": "us-visa-photo-size",
+      "name": "US visa",
+      "title": "US Visa Photo Size — 600×600 px, Under 240 KB (DS-160)",
+      "description": "Make a square 600×600 JPG under 240 KB for the DS-160 and other US visa forms, as the State Department's digital image rules ask. Runs in your browser.",
+      "h1": "US visa photo: 600 × 600 px, under 240 KB",
+      "lede": "The DS-160 wants a square JPEG between 600 × 600 and 1200 × 1200 pixels, no bigger than 240 KB. Choose your photo and download one that fits.",
+      "exam": "US visa applications, including the DS-160 and the Diversity Visa lottery.",
+      "sourceUrl": "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos/digital-image-requirements.html",
+      "sourceTitle": "Digital Image Requirements, travel.state.gov",
+      "sourceDate": null,
+      "lastVerified": "2026-10-24",
+      "notes": [
+        "The crop is taken from the centre of your photo. Start from a photo where your head is centred, with some space above it and your shoulders showing.",
+        "The size and file rules are only part of it. The State Department also checks the background, lighting, expression and head size. See its photo page before you submit.",
+        "This is for visas. US passport renewals online have different rules; see our passport photo page."
+      ],
+      "presets": [
+        {
+          "id": "us-ds160-photo",
+          "label": "Visa photo",
+          "pixelsText": "600–1200, square",
+          "maxKB": 240,
+          "minKB": null,
+          "width": 600,
+          "height": 600,
+          "fit": "cover",
+          "fileName": null,
+          "quote": "Minimum acceptable dimensions are 600 x 600 pixels. Maximum acceptable dimensions are 1200 x 1200 pixels. ... must be less than or equal to 240 kB (kilobytes)."
+        }
+      ]
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Tool from '../components/Tool.astro';
 import Faq from '../components/Faq.astro';
 import data from '../data/sizes.json';
+import forms from '../data/formPresets.json';
 ---
 <Base
   title="Compress an Image to an Exact File Size — ExactSize"
@@ -28,6 +29,20 @@ import data from '../data/sizes.json';
       <nav class="size-links" aria-label="Common sizes">
         {data.sizes.map((s) => <a href={`/${s.slug}/`} class="num">Compress to {s.kb} KB</a>)}
       </nav>
+    </section>
+
+    <section id="forms">
+      <h2>Exam and visa forms</h2>
+      <p class="section-sub">Presets for the photo and signature sizes these forms ask for, copied from each official notice.</p>
+      <nav class="size-links" aria-label="Form presets">
+        {forms.pages.map((p) => <a href={`/${p.slug}/`}>{p.name}</a>)}
+        <a href="/passport-photos/">Passport photos</a>
+      </nav>
+    </section>
+
+    <section>
+      <h2>Need exact pixels without a KB limit?</h2>
+      <p class="section-sub"><a href="/resize-image/">Resize an image to any width and height</a>, as JPG, PNG or WebP.</p>
     </section>
 
     <section>
