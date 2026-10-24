@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import ResizeTool from '../components/ResizeTool.astro';
+import forms from '../data/formPresets.json';
+
+const faq = [
+  {
+    q: 'Is my image uploaded anywhere?',
+    a: 'No. The resizing runs in your browser on your own device. The image never leaves it.',
+  },
+  {
+    q: 'What happens when the new size has a different shape?',
+    a: 'You choose. Crop from the centre keeps the picture sharp and fills the frame but trims the edges. Fit whole picture keeps everything and adds margins (white for JPG, clear for PNG and WebP). Stretch fills the frame and distorts the picture.',
+  },
+  {
+    q: 'Can I make an image bigger?',
+    a: "Yes, up to 8,000 pixels on a side. It won't add detail, so a small photo made large will look soft.",
+  },
+  {
+    q: 'Which format should I pick?',
+    a: 'JPG for photos and for most upload forms. PNG for screenshots, logos and anything with sharp text or a transparent background. WebP is smaller than both but some older sites still reject it.',
+  },
+  {
+    q: 'Can I hit a file size too?',
+    a: 'Yes. For JPG and WebP, enter a maximum in KB and the tool picks the highest quality that fits at your exact pixels. PNG has no quality setting, so the size limit is hidden for PNG.',
+  },
+];
+---
+<Base
+  title="Resize an Image to Exact Pixels — Free, Stays on Your Device"
+  description="Resize a JPG, PNG or WebP to an exact width and height in pixels. Crop, fit or stretch, with an optional KB limit. Runs in your browser; nothing is uploaded."
+  path="/resize-image/"
+>
+  <div class="hero">
+    <h1>Resize an image to exact pixels</h1>
+    <p class="lede">Type the width and height a form or site asks for, pick an image, and download it at exactly that size. Add a KB limit if you need one. Your image stays on your device.</p>
+  </div>
+
+  <ResizeTool />
+
+  <div class="content">
+    <section class="prose">
+      <h2>Getting the size right</h2>
+      <p>Pixel sizes are written width first, then height. 600 × 400 is a wide picture; 400 × 600 is a tall one. If a form gives a range, like "between 350 and 500 pixels", any size inside it works.</p>
+      <p>If the form gives centimetres or inches instead, it also needs a resolution in DPI to turn that into pixels. Pixels = centimetres ÷ 2.54 × DPI. So 3.5 cm at 200 DPI is about 276 pixels.</p>
+    </section>
+
+    <section>
+      <h2>Sizes for common forms</h2>
+      <nav class="size-links" aria-label="Form sizes">
+        {forms.pages.map((p) => <a href={`/${p.slug}/`}>{p.name}</a>)}
+        <a href="/passport-photos/">Passport photos</a>
+        <a href="/">Compress to a KB size</a>
+      </nav>
+    </section>
+
+    <section>
+      <h2>Questions</h2>
+      <div class="faq">
+        {faq.map((i) => (
+          <details>
+            <summary>{i.q}</summary>
+            <p>{i.a}</p>
+          </details>
+        ))}
+      </div>
+      <script type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'FAQPage',
+        mainEntity: faq.map((i) => ({ '@type': 'Question', name: i.q, acceptedAnswer: { '@type': 'Answer', text: i.a } })),
+      })} />
+    </section>
+  </div>
+</Base>

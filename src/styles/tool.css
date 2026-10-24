@@ -1,0 +1,82 @@
+/* Shared styles for the image tools (compressor and resizer). Everything is scoped under .tool. */
+  .tool .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .tool {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0;
+    background: var(--surface); border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgb(28 26 22 / 0.06), 0 12px 32px -12px rgb(28 26 22 / 0.18);
+  }
+  @media (max-width: 820px) { .tool { grid-template-columns: 1fr; } }
+  .tool .pane { padding: 24px; display: grid; gap: 16px; align-content: start; min-width: 0; }
+  .tool .pane-set { border-left: 1px solid var(--line); }
+  @media (max-width: 820px) { .tool .pane-set { border-left: 0; border-top: 1px solid var(--line); } }
+
+  .tool .drop {
+    position: relative; display: grid; place-items: center; min-height: 300px; cursor: pointer;
+    border: 1.5px dashed var(--line-strong); border-radius: 10px; background: var(--paper);
+    transition: border-color 160ms ease-out, background-color 160ms ease-out; overflow: hidden;
+  }
+  .tool .drop:hover, .tool .drop.is-over { border-color: var(--mark); }
+  .tool .drop:focus-within { outline: 2px solid var(--mark); outline-offset: 3px; }
+  .tool .drop-empty { display: grid; justify-items: center; gap: 6px; text-align: center; padding: 24px; color: var(--ink-2); }
+  .tool .drop-empty svg { color: var(--ink); margin-bottom: 4px; }
+  .tool .drop-title { color: var(--ink); font-weight: 620; font-size: 1.15rem; }
+  .tool .drop-sub { font-size: 15px; max-width: 30ch; }
+  .tool .preview { width: 100%; height: 100%; max-height: 420px; object-fit: contain; }
+  .tool .drop.has-file { border-style: solid; border-color: var(--line); }
+  .tool .file-meta { font-size: 14px; color: var(--ink-2); }
+
+  .tool .fields { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+  .tool .field { display: grid; gap: 6px; font-size: 14px; font-weight: 560; min-width: 0; }
+  .tool .field em, .tool .px summary em { font-style: normal; font-weight: 400; color: var(--ink-2); }
+  .tool .input { display: flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); padding-right: 12px; transition: border-color 140ms ease-out; }
+  .tool .input:focus-within { border-color: var(--ink); }
+  .tool .input input { flex: 1; width: 100%; min-width: 0; border: 0; background: transparent; color: var(--ink); font-size: 1.15rem; padding: 10px 12px; outline: none; }
+  .tool .input span { color: var(--ink-2); font-size: 14px; }
+
+  .tool .presets { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tool .chip { border: 1px solid var(--line); background: var(--paper); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 14px; cursor: pointer; transition: border-color 140ms ease-out, background-color 140ms ease-out; }
+  .tool .chip:hover { border-color: var(--ink); }
+  .tool .chip:active { transform: scale(0.97); }
+  .tool .chip[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .tool .px { border-top: 1px solid var(--line); padding-top: 12px; }
+  .tool .px summary { cursor: pointer; font-size: 15px; font-weight: 560; }
+  .tool .px-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 8px; margin-top: 12px; }
+  .tool .times { padding-bottom: 12px; color: var(--ink-2); }
+  .tool .fit { display: grid; gap: 6px; margin-top: 12px; font-size: 15px; }
+  .tool .fit label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+  .tool .fit input { width: 16px; height: 16px; margin: 0; accent-color: var(--ink); }
+
+  .tool .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+  .tool .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--ink); }
+
+  .tool .result { display: grid; gap: 16px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .tool .gauge { position: relative; height: 10px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--line); }
+  .tool .band { position: absolute; top: 0; bottom: 0; background: var(--mark-soft); box-shadow: inset 0 0 0 1px var(--mark); border-radius: 999px; }
+  .tool .marker {
+    position: absolute; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+    background: var(--ink); box-shadow: 0 0 0 3px var(--surface), 0 2px 6px rgb(0 0 0 / 0.25);
+    left: 100%; transition: left 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-reduced-motion: reduce) { .tool .marker { transition: none; } }
+  .tool .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 0; }
+  .tool .stats dt { font-size: 13px; color: var(--ink-2); }
+  .tool .stats dd { margin: 2px 0 0; font-size: 1.2rem; white-space: nowrap; }
+  @media (max-width: 480px) { .tool .stats dd { font-size: 1rem; } .tool .pane { padding: 18px; } .tool .drop { min-height: 200px; } }
+  .tool .msg { font-size: 15px; }
+  .tool .msg.is-ok { color: var(--ok); }
+  .tool .msg-error { color: var(--bad); background: var(--bad-soft); padding: 10px 12px; border-radius: 8px; }
+  .tool .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+    background: var(--ink); color: var(--paper); font-weight: 600; padding: 13px 20px; border-radius: 10px;
+    transition: transform 120ms ease-out, opacity 160ms ease-out;
+  }
+  .tool .btn:hover { color: var(--paper); opacity: 0.9; }
+  .tool .btn:active { transform: scale(0.98); }
+  .tool.is-busy .result { opacity: 0.55; }
+
+  /* Resizer extras */
+  .tool .fit-title { font-weight: 560; }
+  .tool .opts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+  .tool .input.select { padding-right: 0; }
+  .tool .input select { flex: 1; width: 100%; min-width: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 1.05rem; padding: 10px 12px; outline: none; cursor: pointer; }

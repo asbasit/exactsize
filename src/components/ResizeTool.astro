@@ -1,0 +1,247 @@
+---
+import '../styles/tool.css';
+const quick = [
+  { w: 600, h: 600 },
+  { w: 1080, h: 1080 },
+  { w: 1080, h: 1350 },
+  { w: 1200, h: 630 },
+  { w: 1920, h: 1080 },
+];
+---
+<section class="tool" aria-label="Image resizer" data-resize>
+  <div class="pane pane-file">
+    <label class="drop" data-drop>
+      <input class="sr" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,image/heic,image/heif" data-file />
+      <span class="drop-empty" data-empty>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4"/><path d="m7 9 5-5 5 5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <span class="drop-title">Choose an image</span>
+        <span class="drop-sub">or drop it here. JPG, PNG or WebP. It stays on your device.</span>
+      </span>
+      <img class="preview" data-preview alt="" hidden />
+    </label>
+    <p class="file-meta num" data-before hidden></p>
+  </div>
+
+  <div class="pane pane-set">
+    <div class="px-row">
+      <label class="field"><span>Width</span><span class="input"><input class="num" type="number" inputmode="numeric" min="1" max="8000" step="1" placeholder="px" data-w /><span>px</span></span></label>
+      <span class="times" aria-hidden="true">×</span>
+      <label class="field"><span>Height</span><span class="input"><input class="num" type="number" inputmode="numeric" min="1" max="8000" step="1" placeholder="px" data-h /><span>px</span></span></label>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" checked data-lock />
+      <span>Keep the proportions. Type one side and the other follows.</span>
+    </label>
+
+    <div class="presets" role="group" aria-label="Common sizes">
+      {quick.map((q) => <button type="button" class="chip num" data-quick={`${q.w}x${q.h}`}>{q.w} × {q.h}</button>)}
+      <button type="button" class="chip" data-half>Half size</button>
+    </div>
+
+    <div class="fit" role="radiogroup" aria-label="How to fit the picture" data-fitbox hidden>
+      <span class="fit-title">The shape changes. How should it fit?</span>
+      <label><input type="radio" name="rfit" value="cover" checked data-fit /> Crop from the centre</label>
+      <label><input type="radio" name="rfit" value="contain" data-fit /> Fit whole picture, add margins</label>
+      <label><input type="radio" name="rfit" value="stretch" data-fit /> Stretch to fill</label>
+    </div>
+
+    <div class="opts">
+      <label class="field">
+        <span>Save as</span>
+        <span class="input select">
+          <select data-format>
+            <option value="image/jpeg">JPG</option>
+            <option value="image/png">PNG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </span>
+      </label>
+      <label class="field" data-maxrow>
+        <span>Max size <em>optional</em></span>
+        <span class="input"><input class="num" type="number" inputmode="decimal" min="1" step="any" placeholder="none" data-max /><span>KB</span></span>
+      </label>
+    </div>
+
+    <div class="result" data-result aria-live="polite" hidden>
+      <dl class="stats">
+        <div><dt>New size</dt><dd class="num" data-out-size>–</dd></div>
+        <div><dt>Pixels</dt><dd class="num" data-out-px>–</dd></div>
+        <div><dt>Format</dt><dd class="num" data-out-fmt>–</dd></div>
+      </dl>
+      <p class="msg" data-msg></p>
+      <a class="btn" data-download href="#" download>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></svg>
+        <span data-dl-label>Download</span>
+      </a>
+    </div>
+    <p class="msg msg-error" data-error role="alert" hidden></p>
+    <noscript><p class="msg msg-error">This tool needs JavaScript to resize your image in the browser.</p></noscript>
+  </div>
+</section>
+
+<script>
+  import { targetBytes, fitToSize, placeImage, matchAspect, formatKB } from '../lib/fit.js';
+  import { decode, drawPlaced, toBlob, type Source } from '../lib/canvas';
+
+  const root = document.querySelector('[data-resize]') as HTMLElement;
+  const $ = <T extends Element>(sel: string) => root.querySelector(sel) as T;
+  const fileInput = $<HTMLInputElement>('[data-file]');
+  const drop = $<HTMLElement>('[data-drop]');
+  const wIn = $<HTMLInputElement>('[data-w]');
+  const hIn = $<HTMLInputElement>('[data-h]');
+  const lockIn = $<HTMLInputElement>('[data-lock]');
+  const fitBox = $<HTMLElement>('[data-fitbox]');
+  const fmtIn = $<HTMLSelectElement>('[data-format]');
+  const maxIn = $<HTMLInputElement>('[data-max]');
+  const maxRow = $<HTMLElement>('[data-maxrow]');
+  const preview = $<HTMLImageElement>('[data-preview]');
+  const empty = $<HTMLElement>('[data-empty]');
+  const before = $<HTMLElement>('[data-before]');
+  const result = $<HTMLElement>('[data-result]');
+  const errorEl = $<HTMLElement>('[data-error]');
+  const msg = $<HTMLElement>('[data-msg]');
+  const dl = $<HTMLAnchorElement>('[data-download]');
+
+  const MAX_SIDE = 8000;
+  const MAX_PIXELS = 40_000_000;
+  const EXT: Record<string, string> = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
+  const NAME: Record<string, string> = { 'image/jpeg': 'JPG', 'image/png': 'PNG', 'image/webp': 'WebP' };
+  let file: File | null = null;
+  let source: Source | null = null;
+  let runId = 0, loadId = 0;
+  let outUrl = '', previewUrl = '';
+
+  const bytesText = (b: number) => b >= 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${formatKB(b)} KB`;
+  const fitMode = () => (root.querySelector<HTMLInputElement>('[data-fit]:checked')?.value || 'cover') as 'cover' | 'contain' | 'stretch';
+
+  function showError(text: string) { errorEl.textContent = text; errorEl.hidden = false; result.hidden = true; }
+
+  function syncUi() {
+    const w = Number(wIn.value), h = Number(hIn.value);
+    // Only ask how to fit when the new shape differs from the picture's shape.
+    const shapeChanges = !!source && w > 0 && h > 0 && Math.abs(w / h - source.w / source.h) > 0.01;
+    fitBox.hidden = !shapeChanges;
+    // PNG is lossless: a KB target only works for JPG and WebP.
+    maxRow.hidden = fmtIn.value === 'image/png';
+    root.querySelectorAll<HTMLButtonElement>('[data-quick]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.quick === `${w}x${h}`)));
+  }
+
+  async function run() {
+    syncUi();
+    errorEl.hidden = true;
+    if (!file || !source) return;
+    const id = ++runId;
+    const w = Math.round(Number(wIn.value)), h = Math.round(Number(hIn.value));
+    if (!(w >= 1 && h >= 1)) { result.hidden = true; return; }
+    if (w > MAX_SIDE || h > MAX_SIDE || w * h > MAX_PIXELS) { showError(`That's too big to make in a browser. Keep each side under ${MAX_SIDE.toLocaleString()} px.`); return; }
+    const type = fmtIn.value;
+    const maxKB = type === 'image/png' ? 0 : Number(maxIn.value) || 0;
+    const mode = fitBox.hidden ? 'stretch' : fitMode(); // same shape: stretch is an exact fit
+    const place = placeImage(mode, source.w, source.h, w, h);
+    const bg = type === 'image/jpeg' || mode === 'contain' ? '#fff' : null;
+
+    root.classList.add('is-busy');
+    try {
+      const canvas = drawPlaced(source.img, place, w, h, bg);
+      let blob: Blob, q: number | null = null;
+      if (maxKB > 0) {
+        const t = targetBytes(0, maxKB);
+        const r = await fitToSize(async (qq: number) => {
+          const b = await toBlob(canvas, type, qq);
+          return { size: b.size, data: b };
+        }, { max: t.max, width: w, height: h, fixedPixels: true });
+        if (id !== runId) return;
+        if (!r.ok) { showError(`At ${w} × ${h} px this image can't get under ${maxKB} KB. Try fewer pixels or a larger limit.`); return; }
+        blob = r.data; q = r.quality;
+      } else {
+        blob = await toBlob(canvas, type, 0.92);
+      }
+      if (id !== runId) return;
+      if (blob.type !== type) { showError(`This browser can't save ${NAME[type]} files. Pick another format.`); return; }
+
+      $<HTMLElement>('[data-out-size]').textContent = bytesText(blob.size);
+      $<HTMLElement>('[data-out-px]').textContent = `${w} × ${h}`;
+      $<HTMLElement>('[data-out-fmt]').textContent = NAME[type] + (q ? ` ${q}%` : '');
+      const how = mode === 'cover' ? ' Cropped from the centre to the new shape.' : mode === 'contain' ? ' The whole picture is kept, with margins.' : '';
+      msg.textContent = `Exactly ${w} × ${h} pixels.${how}${maxKB ? ` ${blob.size.toLocaleString()} bytes, under ${maxKB} KB.` : ''}`;
+      msg.classList.add('is-ok');
+      if (outUrl) URL.revokeObjectURL(outUrl);
+      outUrl = URL.createObjectURL(blob);
+      dl.href = outUrl;
+      const base = file.name.replace(/\.[^.]+$/, '') || 'image';
+      dl.download = `${base}-${w}x${h}.${EXT[type]}`;
+      $<HTMLElement>('[data-dl-label]').textContent = `Download ${NAME[type]}`;
+      preview.src = outUrl;
+      result.hidden = false;
+    } catch (e) {
+      if (id !== runId) return;
+      showError('Something went wrong while resizing. Try another image or a different browser.');
+      console.error(e);
+    } finally {
+      if (id === runId) root.classList.remove('is-busy');
+    }
+  }
+
+  async function load(f: File) {
+    const id = ++loadId;
+    errorEl.hidden = true;
+    let next: Source;
+    try {
+      next = await decode(f);
+    } catch {
+      if (id !== loadId) return;
+      const heic = /heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name);
+      showError(heic
+        ? "This browser can't open HEIC photos. On iPhone, set Settings > Camera > Formats to Most Compatible, or try Safari."
+        : "This file couldn't be opened as an image. Try a JPG, PNG or WebP.");
+      return;
+    }
+    if (id !== loadId) { next.close(); return; }
+    source?.close(); source = next; file = f;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(f); preview.src = previewUrl;
+    empty.hidden = true; preview.hidden = false; drop.classList.add('has-file');
+    before.hidden = false;
+    before.textContent = `Original: ${bytesText(f.size)} · ${source.w} × ${source.h} px. Click the picture to pick another.`;
+    if (f.type === 'image/png') fmtIn.value = 'image/png';
+    if (!wIn.value && !hIn.value) { wIn.value = String(source.w); hIn.value = String(source.h); }
+    else if (lockIn.checked) { const m = matchAspect(source.w, source.h, wIn.value, ''); hIn.value = String(m.h || ''); }
+    run();
+  }
+
+  let timer = 0;
+  const debounced = () => { clearTimeout(timer); timer = window.setTimeout(run, 300); };
+
+  wIn.addEventListener('input', () => {
+    if (lockIn.checked && source && wIn.value) hIn.value = String(matchAspect(source.w, source.h, wIn.value, '').h);
+    syncUi(); debounced();
+  });
+  hIn.addEventListener('input', () => {
+    if (lockIn.checked && source && hIn.value) wIn.value = String(matchAspect(source.w, source.h, '', hIn.value).w);
+    syncUi(); debounced();
+  });
+  lockIn.addEventListener('change', () => {
+    if (lockIn.checked && source && wIn.value) hIn.value = String(matchAspect(source.w, source.h, wIn.value, '').h);
+    run();
+  });
+  root.querySelectorAll<HTMLButtonElement>('[data-quick]').forEach((b) => b.addEventListener('click', () => {
+    const [w, h] = b.dataset.quick!.split('x');
+    lockIn.checked = false; wIn.value = w; hIn.value = h; run();
+  }));
+  $<HTMLButtonElement>('[data-half]').addEventListener('click', () => {
+    if (!source) return;
+    lockIn.checked = true;
+    wIn.value = String(Math.max(1, Math.round(source.w / 2))); hIn.value = String(Math.max(1, Math.round(source.h / 2)));
+    run();
+  });
+  root.querySelectorAll<HTMLInputElement>('[data-fit]').forEach((el) => el.addEventListener('change', run));
+  fmtIn.addEventListener('change', run);
+  maxIn.addEventListener('input', debounced);
+
+  fileInput.addEventListener('change', () => { const f = fileInput.files?.[0]; if (f) load(f); });
+  ['dragenter', 'dragover'].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove('is-over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); const f = (e as DragEvent).dataTransfer?.files?.[0]; if (f) load(f); });
+  syncUi();
+</script>

@@ -108,6 +108,28 @@ export function coverCrop(srcW, srcH, outW, outH) {
   return { sx: Math.round((srcW - sw) / 2), sy: Math.round((srcH - sh) / 2), sw, sh };
 }
 
+// Where to draw the source on an outW x outH canvas.
+// cover: crop from the centre to fill. contain: whole picture, white margins. stretch: distort to fill.
+// Returns the source rect (sx, sy, sw, sh) and the destination rect (dx, dy, dw, dh).
+export function placeImage(mode, srcW, srcH, outW, outH) {
+  if (mode === 'contain') {
+    const k = Math.min(outW / srcW, outH / srcH);
+    const dw = Math.max(1, Math.round(srcW * k)), dh = Math.max(1, Math.round(srcH * k));
+    return { sx: 0, sy: 0, sw: srcW, sh: srcH, dx: Math.round((outW - dw) / 2), dy: Math.round((outH - dh) / 2), dw, dh };
+  }
+  if (mode === 'stretch') return { sx: 0, sy: 0, sw: srcW, sh: srcH, dx: 0, dy: 0, dw: outW, dh: outH };
+  return { ...coverCrop(srcW, srcH, outW, outH), dx: 0, dy: 0, dw: outW, dh: outH };
+}
+
+// Fill in the missing side from the picture's aspect ratio. Returns 0 for anything invalid.
+export function matchAspect(srcW, srcH, w, h) {
+  w = Math.round(Number(w) || 0); h = Math.round(Number(h) || 0);
+  if (!(srcW > 0 && srcH > 0)) return { w: 0, h: 0 };
+  if (w > 0 && !(h > 0)) return { w, h: Math.max(1, Math.round((w * srcH) / srcW)) };
+  if (h > 0 && !(w > 0)) return { w: Math.max(1, Math.round((h * srcW) / srcH)), h };
+  return { w: Math.max(0, w), h: Math.max(0, h) };
+}
+
 export function formatKB(bytes) {
   const kb = bytes / 1024;
   return kb < 10 ? kb.toFixed(1) : String(Math.round(kb));
