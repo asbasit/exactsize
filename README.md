@@ -17,3 +17,7 @@ Key files: `src/lib/fit.js` (image-size engine), `src/components/Tool.astro` (co
 - `/resize-image/` (`src/components/ResizeTool.astro`): exact width × height, keep proportions or crop / fit / stretch, JPG/PNG/WebP, optional KB limit.
 - Form pages (`src/pages/[...form].astro`) for IBPS, UPSC, SSC and US visa. Values, source links, quotes and last-verified dates live in `src/data/formPresets.json`; `test/formPresets.test.js` pins them to the official numbers. Re-check each source before every exam cycle.
 - Shared browser helpers are in `src/lib/canvas.ts`; shared tool styles in `src/styles/tool.css`.
+
+## Site information
+
+`/about/`, `/contact/`, `/privacy/`, and `/terms/` describe the project, its contact channel, current browser-local image processing, and terms of use. Update the privacy notice if analytics, advertising, accounts, or other third-party services are added.

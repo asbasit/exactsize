@@ -1,0 +1,44 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Privacy Notice — ExactSize"
+  description="How ExactSize's browser-based image tools handle files, what happens when you contact the site, and what external hosting may process."
+  path="/privacy/"
+>
+  <div class="hero">
+    <h1>Privacy notice</h1>
+    <p class="lede">Last updated: 27 October 2026. This notice describes the current ExactSize site and tools.</p>
+  </div>
+
+  <div class="content">
+    <section class="prose">
+      <h2>Image files stay in your browser</h2>
+      <p>The compression and resize tools read the image you select and process it in your browser on your device. They use browser image and canvas features to make a result for you to download. The image file is not uploaded to an ExactSize server.</p>
+      <p>The passport-photo preflight reads the selected file's name, type, byte size, and—where the browser can decode it—pixel dimensions. It does not create a preview or modified copy, and it does not send the file to ExactSize. Its checks are limited and advisory.</p>
+      <p>Your browser holds the selected file and any generated result temporarily while you use the page. If you download a result, your browser saves it to the location you choose. Do not use a shared device for sensitive images unless you trust its settings and know how to clear its local files.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Information handled by the site</h2>
+      <p>The current site code does not provide user accounts or a contact form, and it does not include analytics, advertising, or tracking scripts, site cookies, or browser storage for tracking. This describes the current code and may change if the site adds services later.</p>
+      <p>If the site is served by a hosting provider, that provider may process ordinary technical request information—such as an IP address, browser details, requested page, and time—in its server logs. The provider and its retention practices depend on the hosting configuration and the provider's own terms.</p>
+    </section>
+
+    <section class="prose">
+      <h2>If you email us</h2>
+      <p>If you choose to email <a href="mailto:periscopebookeeping@gmail.com">periscopebookeeping@gmail.com</a>, the sender address, message, and any details you include are received so your message can be read and answered. Your email provider also handles the message under its own terms and privacy practices. Please do not include passport photos, identity documents, or other sensitive files.</p>
+      <p>You can ask about deleting a message from the mailbox by replying to the address above. Deletion may not remove copies held by your email provider or the provider used by the recipient.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Links to other websites</h2>
+      <p>Requirement pages link to official authorities and other external sources. Opening one of those links takes you to that site's service, which has its own privacy notice and practices. ExactSize does not control those external sites.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Changes to this notice</h2>
+      <p>This notice will be updated if the site's tools or data practices change. Check the date at the top of the page for the latest revision.</p>
+    </section>
+  </div>
+</Base>

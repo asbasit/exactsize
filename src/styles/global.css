@@ -57,6 +57,9 @@ p { margin: 0; }
 @media (max-width: 480px) { .site-nav { gap: 12px; font-size: 14px; } }
 .site-nav a { text-decoration: none; }
 .site-nav a[aria-current='page'] { color: var(--ink); text-decoration: underline; }
+.site-foot-copy { display: grid; gap: 4px; max-width: 64ch; }
+.site-foot-nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.site-foot-nav a { text-decoration: none; }
 
 .hero { padding: 28px 0 24px; display: grid; gap: 12px; }
 .section-sub { color: var(--ink-2); max-width: 68ch; }

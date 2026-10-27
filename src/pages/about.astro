@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="About ExactSize — Browser-Based Image Tools"
+  description="Learn what ExactSize does, how its image tools work in your browser, and where its form and passport-photo guidance comes from."
+  path="/about/"
+>
+  <div class="hero">
+    <h1>About ExactSize</h1>
+    <p class="lede">Simple image tools for the size and format a form asks for, with guidance linked back to its source.</p>
+  </div>
+
+  <div class="content">
+    <section class="prose">
+      <h2>What this site does</h2>
+      <p>ExactSize is an independent project maintained by Basit. It helps people compress an image to a file-size limit, resize it to exact pixel dimensions, and check selected form and passport-photo requirements.</p>
+      <p>The tools are designed to make a specific image task easier. They are not affiliated with government departments, passport authorities, exam boards, visa services, or other organizations whose requirements are described here.</p>
+    </section>
+
+    <section class="prose">
+      <h2>How the tools work</h2>
+      <p>Image compression and resizing run in your browser on your device. The passport-photo preflight reads only the selected file's available metadata for its limited checks; it does not edit the photo. The tools do not upload your image files to ExactSize.</p>
+      <p>Requirement guides link to the issuing authority and show when their source information was checked. Rules can change, so follow the current instructions for your exact application or exam.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Limits</h2>
+      <p>A file that matches a listed size or dimension is not guaranteed to be accepted. These tools cannot assess every requirement, such as photo age, expression, lighting, background, capture conditions, or an authority's final decision. Confirm important requirements with the organization receiving your file.</p>
+    </section>
+  </div>
+</Base>

@@ -46,8 +46,16 @@ const nav = [
     </main>
     <footer class="site-foot">
       <div class="wrap">
-        <span>{site}. Your images are processed on your device and never uploaded.</span>
-        <span>Last checked {sizes.lastVerified}</span>
+        <div class="site-foot-copy">
+          <p>{site}. Image processing runs in your browser; the site does not upload your image files.</p>
+          <p>Preset data last checked {sizes.lastVerified}</p>
+        </div>
+        <nav class="site-foot-nav" aria-label="Site information">
+          <a href="/about/">About</a>
+          <a href="/contact/">Contact</a>
+          <a href="/privacy/">Privacy</a>
+          <a href="/terms/">Terms</a>
+        </nav>
       </div>
     </footer>
   </body>
