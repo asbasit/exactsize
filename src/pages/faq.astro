@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+
+const questions = [
+  {
+    q: 'Which tool should I use?',
+    a: 'Use Compress when a form specifies a maximum or range in KB. Use Resize when you need exact pixel dimensions or a particular image format. Use the form pages for their listed exam or visa presets, and the passport-photo page for country- and application-path guidance.',
+  },
+  {
+    q: 'Are my photos uploaded or saved by ExactSize?',
+    a: 'No. Compression and resizing run in your browser on your device, and the passport preflight reads selected file metadata locally. ExactSize does not upload your image file. Your browser temporarily handles the selected image and any result; if you download a result, your browser saves it where you choose. See the Privacy notice for more details.',
+  },
+  {
+    q: 'Why does the compressed result have fewer pixels?',
+    a: 'The compressor first reduces JPEG quality to fit the file-size limit. If quality alone is not enough, it reduces pixel dimensions rather than making the photo excessively blocky. If exact width and height matter, enter both pixel dimensions in the tool and check whether that combination can meet the KB limit.',
+  },
+  {
+    q: 'What does the minimum file-size option do?',
+    a: 'When enabled, padding adds a hidden comment to a JPG file to meet a minimum byte size without changing the visible picture. Do not use padding if the receiving form or authority disallows extra metadata or requires a particular encoding process.',
+  },
+  {
+    q: 'Does “KB” always mean the same number of bytes?',
+    a: 'No. Some systems use 1 KB = 1,000 bytes and others use 1 KB = 1,024 bytes. The compressor keeps below a maximum conservatively; the passport preflight leaves published file-size checks manual when the authority’s conversion convention is not clear. Follow the receiving form’s own instructions.',
+  },
+  {
+    q: 'What if my image will not open?',
+    a: 'Try a JPG, PNG, or WebP image. HEIC/HEIF support depends on your browser; Safari may open some iPhone photos that other browsers cannot. If the file still fails, try another browser or export a compatible copy from your device.',
+  },
+  {
+    q: 'Does a passport-photo preflight result guarantee acceptance?',
+    a: 'No. It checks only selected technical metadata where a published rule can be represented safely. It cannot assess the person’s appearance, background, lighting, photo age, prior editing, capture conditions, or an authority’s decision. Confirm current requirements with the issuing authority.',
+  },
+  {
+    q: 'Are the exam and passport requirements official?',
+    a: 'ExactSize is independent and is not affiliated with the authorities or organizations whose rules are summarized. Preset pages link to their sources and show a checked date. Rules can change, so confirm the latest notice for your exact application or exam cycle.',
+  },
+  {
+    q: 'How do I report an error or ask for help?',
+    a: 'Use the Contact page. Include the page URL and, for a requirement correction, a link to the current official notice. Do not email passport photos, identity documents, or other sensitive files.',
+  },
+];
+---
+<Base
+  title="FAQ — ExactSize Image Tools and Photo Checks"
+  description="Answers about ExactSize image compression, resizing, local file handling, form presets, and passport-photo preflight limitations."
+  path="/faq/"
+>
+  <div class="hero">
+    <h1>Frequently asked questions</h1>
+    <p class="lede">How the tools work, what they can check, and where to confirm requirements.</p>
+  </div>
+
+  <div class="content">
+    <section>
+      <div class="faq">
+        {questions.map((item) => (
+          <details>
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="section-sub">Still need help? <a href="/help/">See troubleshooting steps</a> or <a href="/contact/">contact ExactSize</a>.</p>
+    </section>
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  })} />
+</Base>

@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base
+  title="Help and Troubleshooting — ExactSize"
+  description="Step-by-step help for ExactSize compression, resize, exam-form presets, and passport-photo preflight tools."
+  path="/help/"
+>
+  <div class="hero">
+    <h1>Help and troubleshooting</h1>
+    <p class="lede">Choose the right tool, check the result, and fix common browser or file issues.</p>
+  </div>
+
+  <div class="content">
+    <section class="prose">
+      <h2>Choose a tool</h2>
+      <ul>
+        <li><a href="/">Compress</a> when a form sets a maximum or range in KB. Set a minimum or exact pixel dimensions only if the form asks for them.</li>
+        <li><a href="/resize-image/">Resize</a> when you need a specific width and height, or want to save as JPG, PNG, or WebP.</li>
+        <li>Open an <a href="/#forms">exam or visa preset</a> when it matches your application, then compare every value with the current official notice.</li>
+        <li>Use <a href="/passport-photos/">Passport photos</a> to view country- and application-path guidance. The preflight is limited and advisory, not an approval check.</li>
+      </ul>
+    </section>
+
+    <section class="prose">
+      <h2>Basic steps</h2>
+      <ol>
+        <li>Read the receiving form’s current instructions and note its file type, KB limit, and pixel dimensions.</li>
+        <li>Open the matching tool or preset and choose your image. Compression and resizing happen in your browser on your device.</li>
+        <li>Review the output size, dimensions, and format shown by the tool. If it does not meet the form’s requirements, adjust the fields or use a different source image.</li>
+        <li>Download the result and, before submitting, confirm it opens and that you selected the correct file.</li>
+      </ol>
+    </section>
+
+    <section class="prose">
+      <h2>Common problems</h2>
+      <h3>The image will not open</h3>
+      <p>Try a JPG, PNG, or WebP file. HEIC/HEIF support depends on the browser; Safari may support a photo that another browser cannot decode. You can also export a compatible copy from your device. Keep the original unchanged.</p>
+
+      <h3>The result is still too large</h3>
+      <p>If you set exact pixel dimensions, the image may not fit the requested KB limit at the minimum quality supported by the tool. Try fewer pixels, a higher size limit if the form permits it, or another image. Do not reduce dimensions below the receiving form’s minimum.</p>
+
+      <h3>The result looks cropped or has margins</h3>
+      <p>When source and target shapes differ, choose the fitting option deliberately: crop fills the frame but trims edges; fit keeps the whole image and may add margins; stretch can distort the image. Check the preview and instructions before downloading.</p>
+
+      <h3>The form rejects a file that looks correct</h3>
+      <p>A file-size or pixel match is not a guarantee of acceptance. Check the file type, maximum and minimum limits, exact application path, photo quality rules, and the current official notice. Some portals have additional checks that this site cannot reproduce.</p>
+
+      <h3>The tool does not respond</h3>
+      <p>Make sure JavaScript is enabled, reload the page, and try a current browser. If a download does not begin, check your browser’s download settings and downloads list. Do not select or email sensitive photos on a device you do not trust.</p>
+    </section>
+
+    <section class="prose">
+      <h2>Need more help?</h2>
+      <p>Read the <a href="/faq/">FAQ</a> or <a href="/contact/">contact ExactSize</a>. Include the page URL and a short description of what happened. For outdated requirements, include the relevant official source link. Please do not send passport photos, identity documents, or other sensitive files.</p>
+      <p>For more about file handling, see the <a href="/privacy/">Privacy notice</a>.</p>
+    </section>
+  </div>
+</Base>

@@ -21,3 +21,5 @@ Key files: `src/lib/fit.js` (image-size engine), `src/components/Tool.astro` (co
 ## Site information
 
 `/about/`, `/contact/`, `/privacy/`, and `/terms/` describe the project, its contact channel, current browser-local image processing, and terms of use. Update the privacy notice if analytics, advertising, accounts, or other third-party services are added.
+
+`/faq/` answers common questions about the tools and their limits. `/help/` provides tool-selection steps and troubleshooting guidance; both link to Contact and Privacy where relevant.

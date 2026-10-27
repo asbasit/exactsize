@@ -14,6 +14,8 @@
     { "path": "/about/", "title": "About ExactSize" },
     { "path": "/contact/", "title": "Contact ExactSize" },
     { "path": "/privacy/", "title": "Privacy notice" },
-    { "path": "/terms/", "title": "Terms of use" }
+    { "path": "/terms/", "title": "Terms of use" },
+    { "path": "/faq/", "title": "Frequently asked questions" },
+    { "path": "/help/", "title": "Help and troubleshooting" }
   ]
 }
