@@ -2,8 +2,14 @@
 import '../styles/global.css';
 import sizes from '../data/sizes.json';
 import forms from '../data/formPresets.json';
-interface Props { title: string; description: string; path: string; }
-const { title, description, path } = Astro.props;
+import passport from '../data/passportRules.json';
+import { latestVerified } from '../lib/routes.js';
+interface Props { title: string; description: string; path: string; noindex?: boolean; }
+const { title, description, path, noindex = false } = Astro.props;
+const canonical = new URL(path, Astro.site).href;
+const ogImage = new URL('/og.png', Astro.site).href;
+const checked = latestVerified(sizes.lastVerified, forms.lastVerified, (passport as any)._meta.lastVerified);
+const checkedText = new Date(checked + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 const site = 'ExactSize';
 const sizePaths = sizes.sizes.map((s) => `/${s.slug}/`);
 const formPaths = forms.pages.map((p) => `/${p.slug}/`);
@@ -22,9 +28,17 @@ const nav = [
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:site_name" content={site} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#f6f4ef" />
   </head>
   <body>
@@ -48,7 +62,7 @@ const nav = [
       <div class="wrap">
         <div class="site-foot-copy">
           <p>{site}. Image processing runs in your browser; the site does not upload your image files.</p>
-          <p>Preset data last checked {sizes.lastVerified}</p>
+          <p>Size rules last checked against official sources on <time datetime={checked}>{checkedText}</time>.</p>
         </div>
         <nav class="site-foot-nav" aria-label="Site information">
           <a href="/about/">About</a>
