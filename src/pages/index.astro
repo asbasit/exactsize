@@ -27,7 +27,7 @@ import forms from '../data/formPresets.json';
     <section>
       <h2>Common sizes</h2>
       <nav class="size-links" aria-label="Common sizes">
-        {data.sizes.map((s) => <a href={`/${s.slug}/`} class="num">Compress to {s.kb} KB</a>)}
+        {data.sizes.map((s) => <a href={`/${s.slug}/`}>Compress to {s.kb} KB</a>)}
       </nav>
     </section>
 

@@ -40,7 +40,13 @@
   .tool .chip[aria-pressed='true'] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
   .tool .px { border-top: 1px solid var(--line); padding-top: 12px; }
-  .tool .px summary { cursor: pointer; font-size: 15px; font-weight: 560; }
+  .tool .px summary { cursor: pointer; font-size: 15px; font-weight: 560; list-style: none; display: inline-flex; align-items: center; gap: 8px; }
+  .tool .px summary::-webkit-details-marker { display: none; }
+  .tool .px summary::before {
+    content: ''; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg); transition: transform .2s cubic-bezier(.16,1,.3,1); margin-right: 2px;
+  }
+  .tool .px[open] summary::before { transform: rotate(45deg) translate(-2px, -2px); }
   .tool .px-row { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: end; gap: 8px; margin-top: 12px; }
   .tool .times { padding-bottom: 12px; color: var(--ink-2); }
   .tool .fit { display: grid; gap: 6px; margin-top: 12px; font-size: 15px; }

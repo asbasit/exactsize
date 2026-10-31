@@ -47,7 +47,7 @@ const others = data.sizes.filter((s) => s.kb !== size.kb);
     <section>
       <h2>Other sizes</h2>
       <nav class="size-links" aria-label="Other sizes">
-        {others.map((s) => <a href={`/${s.slug}/`} class="num">{s.kb} KB</a>)}
+        {others.map((s) => <a href={`/${s.slug}/`}>{s.kb} KB</a>)}
         <a href="/">Any size</a>
       </nav>
     </section>
